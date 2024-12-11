@@ -10,7 +10,7 @@ const helper = require('../public/scripts/helper');
 const notes = require('../lib/notes');
 const MobileDetect = require('mobile-detect');
 const vision = require('@google-cloud/vision');
-const client = new vision.ImageAnnotatorClient();
+
 
 // Load Modals
 const User = require('../models/User');
@@ -93,12 +93,13 @@ router.post('/upload', upload.single('image'), (req, res) => {
         );
         res.redirect(req.get('referer'));
     } else {
-        checkExplicitContent(file.path) 
+        const client = new vision.ImageAnnotatorClient();
+        checkExplicitContent(req.file.path)
             .then(isExplicit => {
-                if(isExplicit) {
+                if (isExplicit) {
                     req.flash(
                         'error_msg',
-                        'Your image contains nudity'
+                        'That image has explict content and cannot be uploaded'
                     );
                     res.redirect(req.get('referer'));
                 } else {
@@ -165,8 +166,8 @@ router.post('/upload', upload.single('image'), (req, res) => {
                 }
             })
             .catch(err => {
-                console.log(err);
-            })
+                console.error('Error detecting explicit content:', err);
+            });
     }
 });
 
