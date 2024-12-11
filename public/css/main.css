@@ -1,0 +1,274 @@
+body {
+    background: #1d1d1d;
+}
+
+.navbar {
+    background: #bb0000;
+}
+
+a.navbar-brand {
+    color: #fff;
+}
+
+a {
+    color: #bb0000;
+    text-decoration: none;
+}
+a:hover {
+    color: #bb0000;
+}
+a.nav-link {
+    color: #FFF;
+}
+.bg-danger, .btn-danger {
+    background: #bb0000 !important; 
+}
+.btn-outline-danger {
+    border: 1px #bb0000 solid !important;
+}
+.btn-outline-danger:hover, .btn-outline-danger:focus {
+    background: #bb0000 !important;
+}
+
+.form-control, .custom-file-label {
+    border: 1px #AAA solid;
+    border-radius: 0px;
+}
+.form-control:hover, .form-control:focus, .custom-file-label:hover, .custom-file-label:focus {
+    box-shadow: none;
+    outline: none !important;
+    border: 1px #AAA solid;
+}
+
+.btn-link, .btn-link:hover, .btn-link:focus {
+    color: #FFF;
+}
+
+.btn {
+    border-radius: 0px;
+}
+.pill {
+    padding: 10px;
+    font-size: 16px;
+    transition: ease-in-out .5s;
+}
+.pill:hover {
+    background: #bb0000;
+    text-decoration: none;
+    color: #fff;
+}
+.pill.active {
+    color: #FFF;
+    background: #bb0000;
+}
+
+#likeBtn {
+    background: none;
+    border: none;
+    box-shadow: none;
+    outline: none;
+    color: #FFF;
+    font-size: 14px;
+}
+#unlikeBtn {
+    background: none;
+    border: none;
+    box-shadow: none;
+    outline: none;
+    color: #bb0000;
+    font-size: 14px;
+}
+
+/* Video Player */
+#video_player_box {
+    width: 100%;
+    height: 700px;
+    background: #000;
+    margin-top: 25px;
+}
+#video_controls_bar {
+    width: 100%;
+    height: 80px;
+    background: #000;
+    opacity: 0.7;
+    margin-top: -80px;
+}
+#seekslider[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent;
+    cursor: pointer;
+    width: 100%;
+    margin-bottom: 0px;
+}
+#seekslider[type="range"]::-webkit-slider-runnable-track {
+    background: #bb0000;
+    height: 0.5rem;
+}
+#seekslider[type="range"]::-moz-range-track {
+    background: #bb0000;
+    height: 0.5rem;
+}
+#seekslider[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none; /* Override default look */
+    appearance: none;
+    margin-top: -12px; /* Centers thumb on the track */
+    background-color: #bb0000;
+    height: 2rem;
+    width: 1rem;    
+}
+#playPauseBtn {
+    background: none;
+    border: none;
+    outline: none;
+    color: #bb0000;
+    font-size: 20px;
+    margin-left: 25px;
+    float: left;
+}
+#muteBtn {
+    background: none;
+    border: none;
+    outline: none;
+    color: #bb0000;
+    font-size: 20px;
+    margin-left: 25px;
+    float: left;
+}
+#curtimetext {
+    color: #bb0000;
+    font-size: 20px;
+    margin-left: 20px;
+    float: left;
+}
+#volumeslider[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent;
+    cursor: pointer;
+    width: 100px;
+    margin-bottom: 0px;
+    margin-left: 20px;
+    margin-top: 5px;
+    float: left;
+}
+#volumeslider[type="range"]::-webkit-slider-runnable-track {
+    background: #bb0000;
+    height: 0.5rem;
+}
+#volumeslider[type="range"]::-moz-range-track {
+    background: #bb0000;
+    height: 0.5rem;
+}
+#volumeslider[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none; /* Override default look */
+    appearance: none;
+    margin-top: -12px; /* Centers thumb on the track */
+    background-color: #bb0000;
+    height: 2rem;
+    width: 1rem;    
+}
+#fullScreenBtn {
+    background: none;
+    border: none;
+    outline: none;
+    color: #bb0000;
+    font-size: 20px;
+    margin-right: 25px;
+    float: right;
+}
+
+#vidUnlikeBtn {
+    width: 50px;
+    height: 38px;
+    float: right;
+    color: #FFF;
+    border: none;
+    outline: none;
+    box-shadow: none;
+    background: #bb0000;
+}
+#vidlikeBtn {
+    width: 50px;
+    height: 38px;
+    float: right;
+    color: #bb0000;
+    border: 1px #bb0000 solid;
+    outline: none;
+    box-shadow: none;
+    background: #FFF;
+}
+
+#commentText {
+    border: 0px;
+    outline: none;
+    box-shadow: none;
+    height: 50px;
+    line-height: 25px;;
+    border-radius: 20px;
+    padding: 10px;
+    font-size: 14px;
+    background: #f7f7f7;
+}
+
+#sendBtn {
+    background: none;
+    border: none;
+    outline: none;
+    font-size: 25px;
+    color: #bb0000;
+}
+
+.deleteBtn {
+    background: none;
+    border: none;
+    outline: none;
+    box-shadow: none;
+    color: #bb0000;
+}
+
+#searchBtn {
+    background: none;
+    border: none;
+    outline: none;
+    font-size: 20px;
+    padding: 5px;
+}
+
+.commentBox {
+    display: flexbox;
+    padding: 15px;
+    background: #2c2525;
+    color: #FFF;
+    border-radius: 40px;
+    font-size: 14px;
+    max-width: 350px;
+    box-shadow: 4px 4px 4px #000;
+    padding-left: 30px;
+}
+#commentUnlike {
+    font-size: 12px;
+    color: #bb0000;
+    background: none;
+    border: none;
+    outline: none;
+    box-shadow: none;
+    padding: 0px;
+}
+#commentLike {
+    font-size: 12px;
+    color: #FFF;
+    background: none;
+    border: none;
+    outline: none;
+    box-shadow: none;
+    padding: 0px;
+}
+#shareBtn {
+    background: none;
+    border: none;
+    box-shadow: none;
+    outline: none;
+    color: #FFF;
+    font-size: 12px;
+}
