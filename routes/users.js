@@ -8,6 +8,7 @@ const path = require('path');
 const { forwardAuthenticated, ensureAuthenticated } = require('../config/auth');
 const helper = require('../public/scripts/helper');
 const notes = require('../lib/notes');
+const MobileDetect = require('mobile-detect');
 
 // Load Models
 const User = require('../models/User');
@@ -29,6 +30,20 @@ var storage = multer.diskStorage({
 
 var upload = multer({
     storage: storage
+});
+
+router.get('/signup', forwardAuthenticated, (req, res) => {
+    const md = new MobileDetect(req.headers['user-agent']);
+
+    if(md.mobile()) {
+        res.render('mobile/signup', {
+            title: 'Sign Up For Free',
+            logUser: "",
+            hasNotes: ""
+        });
+    } else {
+        res.redirect('../index');
+    }
 });
     
 // Sign Up Function
@@ -111,6 +126,7 @@ router.get('/logout', (req, res) => {
 
 // Dashboard Page
 router.get('/dashboard', ensureAuthenticated, (req, res) => {
+    const md = new MobileDetect(req.headers['user-agent']);
     Post.aggregate([
         {
             $lookup: {
@@ -150,6 +166,16 @@ router.get('/dashboard', ensureAuthenticated, (req, res) => {
                     User.find({ username: { $ne: req.user.username} }, (err, moreUsers) => {
                         if(err) {
                             console.log(err);
+                        } else if(md.mobile()) {
+                            res.render('mobile/dashboard', {
+                                title: 'VidFriendz - Dashboard',
+                                logUser: req.user,
+                                hasNotes: hasNote,
+                                posts: posts,
+                                moreUsers: moreUsers,
+                                helper: helper,
+                                comments: comments
+                            });
                         } else {
                             res.render('dashboard', {
                                 title: 'VidFriendz - Dashboard',
@@ -170,6 +196,7 @@ router.get('/dashboard', ensureAuthenticated, (req, res) => {
 
 // Notes Page
 router.get('/notes', ensureAuthenticated, (req, res) => {
+    const md = new MobileDetect(req.headers['user-agent']);
     Note.updateMany({ receiver: req.user.username }, { did_read: true }).exec();
     Note.aggregate([
         { $match: { receiver: req.user.username } },
@@ -188,6 +215,14 @@ router.get('/notes', ensureAuthenticated, (req, res) => {
         Note.find({ $and: [{ receiver: req.user.username }, { did_read: false }] }, (err, hasNote) => {
             if(err) {
                 console.log(err);
+            } else if(md.mobile()) {
+                res.render('mobile/notes', {
+                    title: 'VidFriendz - Notifications',
+                    logUser: req.user,
+                    hasNotes: hasNote,
+                    helper: helper,
+                    mynotes: mynotes
+                });
             } else {
                 res.render('notes', {
                     title: 'VidFriendz - Notifications',
@@ -311,6 +346,7 @@ router.post('/unsub/:id', (req, res) => {
 
 // Profile Page
 router.get('/:id', ensureAuthenticated, (req, res) => {
+    const md = new MobileDetect(req.headers['user-agent']);
     User.findOne({ username : req.params.id }, (err, user) => {
         if(err) {
            console.log(err);
@@ -359,6 +395,18 @@ router.get('/:id', ensureAuthenticated, (req, res) => {
                                     Note.find({ $and: [{ receiver: req.user.username }, { did_read: false }] }, (err, hasNote) => {
                                         if(err) {
                                             console.log(err);
+                                        } else if(md.mobile()) {
+                                            res.render('mobile/profile', {
+                                                title: user.firstname + ' ' + user.lastname,
+                                                logUser: req.user,
+                                                user: user,
+                                                posts: posts,
+                                                videos: videos,
+                                                photos: photos,
+                                                hasNotes: hasNote,
+                                                helper: helper,
+                                                comments: comments
+                                            });
                                         } else {
                                             res.render('profile', {
                                                 title: user.firstname + ' ' + user.lastname,

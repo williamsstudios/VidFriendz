@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%- title %></title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="/css/mobile.css">
+    <script src="https://kit.fontawesome.com/81f3202402.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div class="navbar navbar-expand-lg fixed-top">
+        <div class="row">
+            <div class="col-2 pt-2" style="font-size: 20px;">
+                <span class="text-light" onclick="history.back()">
+                    <i class="fa-solid fa-arrow-left"></i>
+                </span>
+            </div>
+            <div class="col-10">
+                <span class="navbar-brand text-light">Create Post</span>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid" style="margin-top: 56px;">
+        <div class="row mt-3">
+            <div class="col-lg-12">
+                <%- include("../inc/messages.ejs") %>
+            </div>
+        </div>
+        <div class="card bg-dark text-light border-0" style="border-radius: 0px;">
+            <div class="card-body">
+                <form method="POST" action="/posts/new/<%- logUser.username %>" enctype="multipart/form-data">
+                    <div class="row mb-3">
+                        <div class="col-2">
+                            <a href="/users/<%- logUser.username %>">
+                                <% if(logUser.avatar) { %>
+                                    <img src="/uploads/<%- logUser.username %>/<%- logUser.avatar %>" alt="<%- logUser.username %>" width="40" height="40" class="rounded-circle">
+                                <% } else { %>
+                                    <img src="/img/no_pic.jpg" alt="<%- logUser.username %>" width="40" height="40" class="rounded-circle">
+                                <% } %>
+                            </a>
+                        </div>
+                        <div class="col-10">
+                            <div class="row">
+                                <div class="col-12">
+                                    <a href="/users/<%- logUser.username %>" class="text-light">
+                                        <h6 class="card-title"><%- logUser.firstname %> <%- logUser.lastname %></h6>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <select id="privacy" name="privacy" style="max-width: 80px;" class="form-control form-control-sm">
+                                        <option value="0">Public</option>
+                                        <option value="1">Private</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 p-0">
+                            <textarea class="form-control  bg-dark border-0" rows="12" cols="0" id="postText" name="postText" placeholder="Write Something New?" style="resize:none;"></textarea>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-12 text-right">
+                            <button type="submit" class="btn btn-danger btn-md">Post</button>
+                        </div>
+                    </div>
+                    <div class="row pt-2 border-top">
+                        <div class="col-12 pt-3">
+                            <ul class="list-group bg-dark border-0">
+                                <li class="list-group-item bg-dark border-0 text-light p-0">
+                                    <label for="image" style="font-size: 15px; cursor: pointer; color: #FFF;"><i class="fa-solid fa-photo-film"></i> Photo/Video</label> 
+                                    <input type="file" id="image" name="image" style="display: none;">
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+</body>
+</html>

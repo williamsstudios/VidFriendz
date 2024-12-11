@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const passport = require('passport');
 const flash = require('connect-flash');
 const session = require('express-session');
+const MobileDetect = require('mobile-detect');
 const { forwardAuthenticated, ensureAuthenticated } = require('./config/auth');
 
 
@@ -11,7 +12,8 @@ const { forwardAuthenticated, ensureAuthenticated } = require('./config/auth');
 const app = express();
 
 // View Engine
-app.set("views", path.join(__dirname, 'views'));
+app.set("views", [path.join(__dirname, 'views'),
+    path.join(__dirname, 'views/mobile/')]);
 app.set("view engine", "ejs");
 
 // Static Folder
@@ -62,11 +64,22 @@ app.use(function(req, res, next) {
 
 // Home Route
 app.get('/', forwardAuthenticated, (req, res) => {
-    res.render('index',{
-        title: "Welcome To VidFriendz",
-        logUser: "",
-        hasNotes: ""
-    });
+    const md = new MobileDetect(req.headers['user-agent']);
+
+    if(md.mobile()) {
+        res.render('mobile/index',{
+            title: "Welcome To VidFriendz",
+            logUser: "",
+            hasNotes: ""
+        });
+    } else {
+        res.render('index',{
+            title: "Welcome To VidFriendz",
+            logUser: "",
+            hasNotes: ""
+        });
+    }
+    
 });
 
 // Terms Of Service Page

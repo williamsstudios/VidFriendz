@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title><%- title %></title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="/css/mobile.css">
+    <script src="https://kit.fontawesome.com/81f3202402.js" crossorigin="anonymous"></script>
+</head>
+<body>
+<%- include("./inc/header.ejs") %>
+<div class="container-fluid" style="margin-top: 56px;">
+    <div class="row">
+        <div class="col-lg-12">
+            <%- include("./inc/messages.ejs") %>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card mt-3 border-0 bg-dark text-light" style="border-radius: 0px;">
+                <div class="card-body">
+                    <h4 class="card-title">Upload A Photo</h4>
+                    <hr />
+                    <form method="POST" action="/photos/upload" enctype="multipart/form-data">
+                        <div class="row mb-2">
+                            <div class="col">
+                                <div class="input-group">
+                                    <div class="custom-file">
+                                        <input type="file" class="custom-file-input" id="image" name="image">
+                                        <label class="custom-file-label" for="image" aria-describedby="inputGroupFileAddon02">Choose file</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col">
+                                <select id="privacy" name="privacy" class="form-control">
+                                    <option value="0">Public</option>
+                                    <option value="1">Private</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col">
+                                <input type="text" id="album" name="album" class="form-control" placeholder="Enter an album to upload this image to">
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col">
+                                <textarea id="description" name="description" rows="8" cols="0" class="form-control" placeholder="Enter A Description For This Video"></textarea>
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col">
+                                <button type="submit" class="btn btn-danger btn-md">Upload</button>
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col text-center">
+                                <p class="mb-0">By submitting your image to VidFriendz, you acknowledge that you agree to VidFriendz <a href="#">Terms Of Services</a> and <a href="#">Community Guildlines</a></p>
+                                <p class="mb-0">Please be sure not to violate others' copyright or privacy rights.</p>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+</body>
+</html>

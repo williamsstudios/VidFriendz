@@ -8,6 +8,7 @@ const path = require('path');
 const { forwardAuthenticated, ensureAuthenticated } = require('../config/auth');
 const helper = require('../public/scripts/helper');
 const notes = require('../lib/notes');
+const MobileDetect = require('mobile-detect');
 
 // Load Models
 const User = require('../models/User');
@@ -18,9 +19,20 @@ const Video = require('../models/Video');
 
 // Search Page
 router.get('/', ensureAuthenticated, (req, res) => {
+    const md = new MobileDetect(req.headers['user-agent']);
     Note.find({ $and: [{ receiver: req.user.username }, { did_read: false }] }, (err, hasNote) => {
         if(err) {
             console.log(err);
+        } else if(md.mobile()) {
+            res.render('mobile/search', {
+                title: 'VidFriendz - Search',
+                logUser: req.user,
+                hasNotes: hasNote,
+                userResults: "",
+                videoResults: "",
+                query: "",
+                helper: helper
+            });
         } else {
             res.render('search', {
                 title: 'VidFriendz - Search',

@@ -8,6 +8,7 @@ const path = require('path');
 const { forwardAuthenticated, ensureAuthenticated } = require('../config/auth');
 const helper = require('../public/scripts/helper');
 const notes = require('../lib/notes');
+const MobileDetect = require('mobile-detect');
 
 // Load Modals
 const User = require('../models/User');
@@ -34,6 +35,7 @@ var upload = multer({
 
 // Upload Page
 router.get('/upload', ensureAuthenticated, (req, res) => {
+    const md = new MobileDetect(req.headers['user-agent']);
     Photo.find({ author: req.user.username }, (err, photos) => {
         if(err) {
             console.log(err);
@@ -41,6 +43,13 @@ router.get('/upload', ensureAuthenticated, (req, res) => {
             Note.find({ $and: [{ receiver: req.user.username }, { did_read: false }] }, (err, hasNote) => {
                 if(err) {
                     console.log(err);
+                } else if(md.mobile()) {
+                    res.render('mobile/upload_photo', {
+                        title: 'Upload A Photo',
+                        logUser: req.user,
+                        hasNotes: hasNote,
+                        photos: photos
+                    });
                 } else {
                     res.render('upload_photo', {
                         title: 'Upload A Photo',
@@ -136,6 +145,7 @@ router.post('/upload', upload.single('image'), (req, res) => {
 
 // View Photo
 router.get('/view/:id', ensureAuthenticated, (req, res) => {
+    const md = new MobileDetect(req.headers['user-agent']);
     Photo.findOne({ _id: req.params.id }, (err, photo) => {
         if(err) {
             console.log(err);
@@ -168,8 +178,19 @@ router.get('/view/:id', ensureAuthenticated, (req, res) => {
                                 Note.find({ $and: [{ receiver: req.user.username }, { did_read: false }] }, (err, hasNote) => {
                                     if(err) {
                                         console.log(err);
+                                    } else if(md.mobile()) {
+                                        res.render('/mobile/view_photos', {
+                                            title: user.firstname + ' ' + user.lastname + ' photos',
+                                            logUser: req.user,
+                                            albumPhotos: albumPhotos,
+                                            photo: photo,
+                                            hasNotes: hasNote,
+                                            helper: helper,
+                                            comments: comments,
+                                            user: user
+                                        });
                                     } else {
-                                        res.render('view_photos', {
+                                        res.render('/view_photos', {
                                             title: user.firstname + ' ' + user.lastname + ' photos',
                                             logUser: req.user,
                                             albumPhotos: albumPhotos,
@@ -365,6 +386,7 @@ router.post('/delete/:id', (req, res) => {
 
 // Album Page
 router.get('/albums/:id', ensureAuthenticated, (req, res) => {
+    const md = new MobileDetect(req.headers['user-agent']);
     Album.find({ author: req.params.id }, (err, albums) => {
         if(err) {
             console.log(err);
@@ -380,6 +402,15 @@ router.get('/albums/:id', ensureAuthenticated, (req, res) => {
                             Note.find({ $and: [{ receiver: req.user.username }, { did_read: false }] }, (err, hasNote) => {
                                 if(err) {
                                     console.log(err);
+                                } else if(md.mobile()) {
+                                    res.render('/mobile/gallery', {
+                                        title: user.firstname + "'s Photo Gallery",
+                                        logUser: req.user,
+                                        hasNotes: hasNote,
+                                        photos: photos,
+                                        albums: albums,
+                                        user: user
+                                    });
                                 } else {
                                     res.render('gallery', {
                                         title: user.firstname + "'s Photo Gallery",
@@ -401,6 +432,7 @@ router.get('/albums/:id', ensureAuthenticated, (req, res) => {
 
 // View Album
 router.get('/viewAlbum/:id', ensureAuthenticated, (req, res) => {
+    const md = new MobileDetect(req.headers['user-agent']);
     Album.findOne({ _id: req.params.id }, (err, album) => {
         if(err) {
             console.log(err);
@@ -416,6 +448,15 @@ router.get('/viewAlbum/:id', ensureAuthenticated, (req, res) => {
                             Note.find({ $and: [{ receiver: req.user.username }, { did_read: false }] }, (err, hasNote) => {
                                 if(err) {
                                     console.log(err);
+                                } else if(md.mobile()) {
+                                    res.render('mobile/view_album', {
+                                        title: album.name,
+                                        logUser: req.user,
+                                        user: user,
+                                        hasNotes: hasNote,
+                                        album: album,
+                                        photos: photos
+                                    });
                                 } else {
                                     res.render('view_album', {
                                         title: album.name,

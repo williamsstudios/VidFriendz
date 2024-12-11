@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title><%- title %></title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="/css/mobile.css">
+    <script src="https://kit.fontawesome.com/81f3202402.js" crossorigin="anonymous"></script>
+</head>
+<body>
+<%- include("./inc/header.ejs") %>
+<div class="container-fluid" style="margin-top: 66px;">
+    <div class="row">
+        <div class="col-lg-12">
+            <%- include("./inc/messages.ejs") %>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div id="video_player_box">
+                <video id="my_video" width="100%" height="700" poster="/uploads/<%- video.author %>/<%- video.thumbnail %>">
+                    <source src="/uploads/<%- video.author %>/<%- video.filename %>">
+                </video>
+                <div id="video_controls_bar">
+                    <input id="seekslider" type="range" min="0" max="100" value="0" step="1">
+                    <button id="playPauseBtn"><i class="fa-solid fa-play"></i></button>
+                    <button id="muteBtn"><i class="fa-solid fa-volume-xmark"></i></button>
+                    <input id="volumeslider" type="range" min="0" max="100" value="0" step="1">
+                    <span id="curtimetext">00:00</span>
+                    <button id="fullScreenBtn"><i class="fa-solid fa-expand"></i></button>
+                </div>
+            </div>
+            <div class="card mt-2 border-0 bg-dark" style="border-radius: 0px;">
+                <div class="card-body">
+                    <div class="row mb-2">
+                        <div class="col-12">
+                            <h5 class="card-title text-light"><%- video.title %></h5>
+                        </div>
+                    </div>
+                    <div class="row mb-4">
+                        <div class="col-1">
+                            <a href="/users/<%- video.author %>">
+                                <% if(vidUser.avatar) { %>
+                                    <img src="/uploads/<%- video.author %>/<%- vidUser.avatar %>" width="50" height="50" class="rounded-circle">
+                                <% } else { %>
+                                    <img src="/img/no_pic.jpg" width="50" height="50" class="rounded-circle">
+                                <% } %>
+                            </a>
+                        </div>
+                        <div class="col-2 pl-0 pt-2">
+                            <h6 class="card-title mb-0">
+                                <a href="/users/<%- video.author %>" class="text-light"><%- vidUser.firstname %> <%- vidUser.lastname %></a>
+                            </h6>
+                            <p class="text-muted p-0 m-0"><%- vidUser.subscribers.length %> subscribers</p>
+                        </div>
+                        <div class="col-2 pl-0 pt-2">
+                            <% if(logUser.username == video.author) { %>
+                                <a href="/videos/edit/<%- video._id %>" class="btn btn-danger btn-block">Edit Video</a>
+                            <% } else if(logUser.username == vidUser.subscribers) { %>
+                                <form method="POST" action="/users/unsub/<%- vidUser._id %>">
+                                    <button type="submit" class="btn btn-danger btn-block">Subscribed</button>
+                                </form>
+                            <% } else { %>
+                                <form method="POST" action="/users/sub/<%- vidUser._id %>">
+                                    <button type="submit" class="btn btn-outline-danger btn-block">Subscribe</button>
+                                </form>
+                            <% } %>
+                        </div>
+                        <div class="col-7 pt-2">
+                            <% if(logUser.username == video.likes) { %>
+                                <form method="POST" action="/videos/unlike/<%- video._id %>">
+                                    <button type="submit" id="vidUnlikeBtn"><i class="fa-solid fa-heart"></i> <%- video.likes.length %></button>
+                                </form>
+                            <% } else { %>
+                                <form method="POST" action="/videos/like/<%- video._id %>">
+                                    <button type="submit" id="vidlikeBtn"><i class="fa-regular fa-heart"></i> <%- video.likes.length %></button>
+                                </form>
+                            <% } %>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-12">
+                            <div class="card border-0 bg-dark text-light" style="border-radius: 0px;">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <p><b><%- video.views.length %> views &bull; <%= helper.timeSince(video.upload_date) %></b></p>
+                                            <p><%- video.description %></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card mt-3 border-0 bg-dark text-light" style="border-radius: 0px;">
+                <div class="card-body">
+                    <div class="row mb-2">
+                        <div class="col-12">
+                            <% for(var c = 0; c<comments.length; c++) { %>
+                                <% if(comments[c].post_id == video._id) { %>
+                                    <div class="row mb-3">
+                                        <div class="col-12">
+                                            <form method="POST" action="/videos/comment/<%- video._id %>">
+                                                <div class="row mt-2">
+                                                    <div class="col-11">
+                                                        <textarea id="commentText" name="commentText" style="resize: none;" class="form-control" placeholder="Write A Reply"></textarea>
+                                                    </div>
+                                                    <div class="col-1">
+                                                        <button type="submit" id="sendBtn"><i class="fa-solid fa-paper-plane"></i></button>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-12">
+                                            <h4 class="card-title">Comments</h4>
+                                        </div>
+                                    </div>
+                                    <div class="row text-light">
+                                        <div class="col-1 pl-4">
+                                            <a href="/users/<%- comments[c].author %>">
+                                                <% if(comments[c].comments.avatar) { %>
+                                                    <img src="/uploads/<%- comments[c].author %>/<%- comments[c].comments.avatar %>" width="32" height="32" class="rounded-circle">
+                                                <% } else { %>
+                                                    <img src="/img/no_pic.jpg" width="32" height="32" class="rounded-circle">
+                                                <% } %>
+                                            </a>
+                                        </div>
+                                        <div class="col-11">
+                                            <div class="commentBox">
+                                                <p class="m-0 p-0" style="font-size: 16px;"><a href="/users/<%- comments[c].author %>" class="text-light"><%- comments[c].comments.firstname %> <%- comments[c].comments.lastname %></a></p>
+                                                <p class="m-0 p-0"><%- comments[c].data %></p> 
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-2 mt-3 mb-3">
+                                        <div class="col-1"></div>
+                                        <div class="col-11 pl-5">
+                                            <ul class="list-group list-group-horizontal bg-dark p-0 border-0" style="border-radius: 0px;">
+                                                <li class="list-group-item p-0 bg-dark pr-3 border-0" style="border-radius: 0px;">
+                                                    <button id="commentLike" class="text-light"><%= helper.timeSince(comments[c].date_made) %></button>
+                                                </li>
+                                                <li class="list-group-item p-0 pr-3 bg-dark border-0" style="border-radius: 0px;">
+                                                    <% if(comments[c].likes == logUser.username) { %>
+                                                        <form method="POST" action="/videos/unlikeComment/<%- comments[c]._id %>">
+                                                            <button type="submit" id="commentUnlike"><i class="fa-solid fa-heart mr-1"></i> Liked</button>
+                                                        </form>
+                                                    <% } else { %>
+                                                        <form method="POST" action="/videos/likeComment/<%- comments[c]._id %>">
+                                                            <button type="submit" id="commentLike" class="text-light"><i class="fa-regular fa-heart mr-1"></i> Like</button>
+                                                        </form>
+                                                    <% } %>
+                                                </li>
+                                                <% if(comments[c].author == logUser.username) { %>
+                                                    <li class="list-group-item p-0 bg-dark pr-3 border-0" style="border-radius: 0px;">
+                                                        <form method="POST" action="/videos/deleteComment/<%- comments[c]._id %>">
+                                                            <button type="submit" id="commentLike" class="text-light"><i class="fa-solid fa-trash mr-1"></i> Delete</button>
+                                                        </form>
+                                                    </li>
+                                                <% } %>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    
+                                <% } %>
+                            <% } %>    
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+       
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+<script src="/js/video_player.js"></script>
+</body>
+</html>

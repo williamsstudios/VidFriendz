@@ -8,6 +8,7 @@ const multer = require('multer');
 const path = require('path');
 const { forwardAuthenticated, ensureAuthenticated } = require('../config/auth');
 const helper = require('../public/scripts/helper');
+const MobileDetect = require('mobile-detect');
 
 // Load Modals
 const User = require('../models/User');
@@ -207,6 +208,7 @@ router.post('/share/:id', (req, res) => {
 
 // View Post Page
 router.get('/view/:id', ensureAuthenticated, (req, res) => {
+    const md = new MobileDetect(req.headers['user-agent']);
     Post.findOne({ _id: req.params.id }, (err, post) => {
         if(err) {
             console.log(err);
@@ -231,6 +233,16 @@ router.get('/view/:id', ensureAuthenticated, (req, res) => {
                         Note.find({ $and: [{ receiver: req.user.username }, { did_read: false }] }, (err, hasNote) => {
                             if(err) {
                                 console.log(err);
+                            } else if(md.mobile()) {
+                                res.render('mobile/view_post', {
+                                    title: postUser.firstname + ' ' + postUser.lastname + ' Post',
+                                    logUser: req.user,
+                                    hasNotes: hasNote,
+                                    helper: helper,
+                                    comments: comments,
+                                    post: post,
+                                    postUser: postUser
+                                });
                             } else {
                                 res.render('view_post', {
                                     title: postUser.firstname + ' ' + postUser.lastname + ' Post',
@@ -248,6 +260,21 @@ router.get('/view/:id', ensureAuthenticated, (req, res) => {
             });
         }
     });
+});
+
+// Post Edit Page
+router.get('/edit', ensureAuthenticated, (req, res) => {
+    const md = new MobileDetect(req.headers['user-agent']);
+
+    if(md.mobile()) {
+        res.render('mobile/edit_post', {
+            title: 'Edit Post',
+            logUser: req.user,
+            hasNotes: ""
+        });
+    } else {
+        res.redirect('/');
+    }
 });
 
 // Like Post

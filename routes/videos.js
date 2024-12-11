@@ -8,6 +8,7 @@ const multer = require('multer');
 const path = require('path');
 const { forwardAuthenticated, ensureAuthenticated } = require('../config/auth');
 const helper = require('../public/scripts/helper');
+const MobileDetect = require('mobile-detect');
 
 // Load Modals
 const User = require('../models/User');
@@ -33,9 +34,17 @@ var upload = multer({
 
 // Upload Page
 router.get('/upload', ensureAuthenticated, (req, res) => {
+    const md = new MobileDetect(req.headers['user-agent']);
     Note.find({ $and: [{ receiver: req.user.username }, { did_read: false }] }, (err, hasNote) => {
         if(err) {
             console.log(err);
+        } else if(md.mobile()) {
+            res.render('mobile/upload', {
+                title: 'VidFriendz - Upload A Video',
+                logUser: req.user,
+                hasNotes: hasNote,
+                helper: helper
+            });
         } else {
             res.render('upload', {
                 title: 'VidFriendz - Upload A Video',
@@ -98,6 +107,7 @@ router.post('/upload', upload.single('video'), (req, res) => {
 
 // Watch Page
 router.get('/watch/:id', ensureAuthenticated, (req, res) => {
+    const md = new MobileDetect(req.headers['user-agent']);
     Video.findOne({ $or: [{ _id: req.params.id }, { post_id: req.params.id }] }, (err, video) => {
         if(err) {
             console.log(err);
@@ -124,6 +134,16 @@ router.get('/watch/:id', ensureAuthenticated, (req, res) => {
                         Note.find({ $and: [{ receiver: req.user.username }, { did_read: false }] }, (err, hasNote) => {
                             if(err) {
                                 console.log(err);
+                            } else if(md.mobile()) {
+                                res.render('mobil/watch', {
+                                    title: video.title,
+                                    logUser: req.user,
+                                    video: video,
+                                    vidUser: vidUser,
+                                    hasNotes: hasNote,
+                                    helper: helper,
+                                    comments: comments
+                                });
                             } else {
                                 res.render('watch', {
                                     title: video.title,
@@ -180,6 +200,7 @@ router.post('/comment/:id', (req, res) => {
 
 // Edit Video Page
 router.get('/edit/:id', ensureAuthenticated, (req, res) => {
+    const md = new MobileDetect(req.headers['user-agent']);
     Video.findOne({ _id: req.params.id }, (err, video) => {
         if(err) {
             console.log(err);
@@ -187,6 +208,13 @@ router.get('/edit/:id', ensureAuthenticated, (req, res) => {
             Note.find({ $and: [{ receiver: req.user.username }, { did_read: false }] }, (err, hasNote) => {
                 if(err) {
                     console.log(err);
+                } else if(md.mobile()) {
+                    res.render('mobile/edit_video', {
+                        title: 'Edit Your Video',
+                        logUser: req.user,
+                        video: video,
+                        hasNotes: hasNote,
+                    });
                 } else {
                     res.render('edit_video', {
                         title: 'Edit Your Video',
