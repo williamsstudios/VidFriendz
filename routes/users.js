@@ -194,6 +194,36 @@ router.get('/dashboard', ensureAuthenticated, (req, res) => {
     }).catch(err => console.log(err));
 });
 
+// Explore Users
+router.get('/explore', ensureAuthenticated, (req, res) => {
+    const md = new MobileDetect(req.headers['user-agent']);
+    User.find({  }, (err, moreUsers) => {
+        if(err) {
+            console.log(err);
+        } else {
+            Note.find({ $and: [{ receiver: req.user.username }, { did_read: false }] }, (err, hasNote) => {
+                if(err) {
+                    console.log(err);
+                } else if(md.mobile()) {
+                    res.render('mobile/explore_users', {
+                        title: 'Explore VidFriendz',
+                        logUser: req.user,
+                        moreUsers: moreUsers,
+                        hasNotes: hasNote
+                    });
+                } else {
+                    res.render('explore_users', {
+                        title: 'Explore VidFriendz',
+                        logUser: req.user,
+                        moreUsers: moreUsers,
+                        hasNotes: hasNote
+                    });
+                }
+            });
+        }
+    });
+});
+
 // Notes Page
 router.get('/notes', ensureAuthenticated, (req, res) => {
     const md = new MobileDetect(req.headers['user-agent']);

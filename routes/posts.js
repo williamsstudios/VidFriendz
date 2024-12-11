@@ -185,7 +185,7 @@ router.post('/share/:id', (req, res) => {
                         data: post.data,
                         image: post.image,
                         video: post.video,
-                        action: "shared" + postUser.firstname + postUser.lastname + "'s post"
+                        action: "shared <a href='/users/<%- postUser.username %>'>" + postUser.firstname + postUser.lastname + "'s</a> post"
                     });
         
                     newPost

@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title><%- title %></title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="/css/main.css">
+    <script src="https://kit.fontawesome.com/81f3202402.js" crossorigin="anonymous"></script>
+</head>
+<body>
+<%- include("./inc/header.ejs") %>
+<div class="container-fluid" style="margin-top: 66px;">
+    <div class="row">
+        <div class="col-lg-12">
+            <%- include("./inc/messages.ejs") %>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card bg-dark border-0 text-light" style="border-radius:0px">
+                <div class="card-body">
+                    <div class="row pb-3 border-bottom">
+                        <div class="col-12">
+                            <h4 class="card-title">Explore Users</h4>
+                        </div>
+                    </div>
+                    <% for(var mu = 0; mu<moreUsers.length; mu++) { %>
+                        <% if(moreUsers[mu].username != logUser.username && logUser.subscriptions != moreUsers[mu].username) { %>
+                            <div class="row mt-2">
+                                <div class="col-2">
+                                    <div class="card bg-dark border-0 text-light" style="border-radius: 0px;">
+                                        <a href="/users/<%- moreUsers[mu].username %>" class="text-light">
+                                            <% if(moreUsers[mu].avatar) { %>
+                                                <img src="/uploads/<%- moreUsers[mu].username %>/<%- moreUsers[mu].avatar %>" class="card-img-top">
+                                            <% } else { %>
+                                                <img src="/img/no_pic.jpg" class="card-img-top">
+                                            <% } %>
+                                        </a>
+                                        <div class="card-body text-center">
+                                            <a href="/users/<%- moreUsers[mu].username %>" class="text-light">
+                                                <h5 class="card-title"><%- moreUsers[mu].firstname %> <%- moreUsers[mu].lastname %></h5>
+                                            </a>
+                                            <form method="POST" action="/users/sub/<%- moreUsers[mu]._id %>">
+                                                <button type="submit" class="btn btn-outline-danger btn-md">Subscribe</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        <% } %>
+                    <% } %>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+</body>
+</html>

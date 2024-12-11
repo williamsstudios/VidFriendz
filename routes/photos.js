@@ -226,7 +226,7 @@ router.post('/share/:id', (req, res) => {
                         account_name: photo.author,
                         data: photo.description,
                         image: photo.filename,
-                        action: "shared " + photoUser.firstname + ' ' + photoUser.lastname + "'s photo"
+                        action: "shared <a href='/users/<%- photoUser.username %>'>" + photoUser.firstname + ' ' + photoUser.lastname + "'s</a> photo"
                     });
 
                     newPost

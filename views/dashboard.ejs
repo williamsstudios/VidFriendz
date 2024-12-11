@@ -45,17 +45,20 @@
                 <div class="card-body p-0">
                     <ul class="list-group bg-dark border-0" style="border-radius: 0px;">
                         <li class="list-group-item bg-dark border-0" style="border-radius: 0px;">
-                            <a href="/users/<%- logUser.username %>" class="text-light">Profile</a>
+                            <a href="/users/<%- logUser.username %>" class="text-light"><i class="fa-solid fa-user mr-2"></i> Profile</a>
                         </li>
                         <li class="list-group-item bg-dark border-0" style="border-radius: 0px;">
                             <% if(hasNotes.length >= 1) { %>
-                                <a href="/users/notes" class="text-light">Notifications(<%- hasNotes.length %>)</a>
+                                <a href="/users/notes" class="text-light"><i class="fa-solid fa-bell mr-2"></i> Notifications(<%- hasNotes.length %>)</a>
                             <% } else { %>
-                                <a href="/users/notes" class="text-light">Notifications</a>
+                                <a href="/users/notes" class="text-light"><i class="fa-regular fa-bell mr-2"></i> Notifications</a>
                             <% } %>
                         </li>
                         <li class="list-group-item bg-dark border-0" style="border-radius: 0px;">
-                            <a href="/photos/albums/<%- logUser.username %>" class="text-light">Photos</a>
+                            <a href="/photos/albums/<%- logUser.username %>" class="text-light"><i class="fa-solid fa-images mr-2"></i> Photos</a>
+                        </li>
+                        <li class="list-group-item bg-dark border-0" style="border-radius: 0px;">
+                            <a href="/users/explore" class="text-light"><i class="fa-brands fa-wpexplorer mr-2"></i> Explore</a>
                         </li>
                     </ul>
                 </div>
@@ -263,9 +266,12 @@
             <div class="card mt-3 bg-dark text-light" style="border-radius: 0px;">
                 <div class="card-body">
                     <h5 class="card-title">People To Subscribe To</h5>
+                    <span class="float-right" style="margin-top: -35px; font-size: 12px;">
+                        <a href="/users/explore" class="text-light">View More</a>
+                    </span>
                     <hr />
                     <% for(var mu = 0; mu<moreUsers.length; mu++) { %>
-                        <% if(moreUsers[mu].username != logUser.subscriptions) { %>
+                        <% if(moreUsers[mu].username != logUser.username && logUser.subscriptions != moreUsers[mu].username) { %>
                             <div class="row mt-4">
                                 <div class="col-lg-2">
                                     <a href="/users/<%- moreUsers[mu].username %>">
