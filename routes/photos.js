@@ -9,6 +9,8 @@ const { forwardAuthenticated, ensureAuthenticated } = require('../config/auth');
 const helper = require('../public/scripts/helper');
 const notes = require('../lib/notes');
 const MobileDetect = require('mobile-detect');
+const vision = require('@google-cloud/vision');
+const client = new vision.ImageAnnotatorClient();
 
 // Load Modals
 const User = require('../models/User');
@@ -32,6 +34,18 @@ var storage = multer.diskStorage({
 var upload = multer({
     storage: storage
 });
+
+async function checkExplicitContent(filePath) {
+    const [result] = await client.safeSearchDetection(filePath);
+    const detections = result.safeSearchAnnotation;
+  
+    if (detections.adult === 'LIKELY' || detections.adult === 'VERY_LIKELY') {
+      return true; // Image is likely explicit
+    } else {
+      return false; // Image is not explicit
+    }
+}
+  
 
 // Upload Page
 router.get('/upload', ensureAuthenticated, (req, res) => {
@@ -79,66 +93,80 @@ router.post('/upload', upload.single('image'), (req, res) => {
         );
         res.redirect(req.get('referer'));
     } else {
-        Album.findOne({ $and: [{ author: req.user.username }, { name: album }] }, (err, albumExists ) => {
-            if(err) {
+        checkExplicitContent(file.path) 
+            .then(isExplicit => {
+                if(isExplicit) {
+                    req.flash(
+                        'error_msg',
+                        'Your image contains nudity'
+                    );
+                    res.redirect(req.get('referer'));
+                } else {
+                    Album.findOne({ $and: [{ author: req.user.username }, { name: album }] }, (err, albumExists ) => {
+                        if(err) {
+                            console.log(err);
+                        } else if(albumExists) {
+                            let newPhoto = new Photo({
+                                author: author,
+                                filename: file.filename,
+                                album: album,
+                                description: description,
+                                privacy: privacy
+                            });
+            
+                            newPhoto
+                                .save()
+                                .then((photo) => {
+                                    Album.findOneAndUpdate({ name: album }, { $push: { photos: newPhoto.filename } }).exec();
+                                    req.flash(
+                                        'success_msg',
+                                        'Your Photo Has Been Uploaded'
+                                    );
+                                    res.redirect(req.get('referer'));
+                                })
+                                .catch(err => console.log(err));
+                        } else {
+                            let newAlbum = new Album({
+                                author: req.user.username,
+                                name: album
+                            });
+            
+                            newAlbum
+                                .save()
+                                .then(newAlbum => {
+                                    let newPhoto = new Photo({
+                                        author: author,
+                                        filename: file.filename,
+                                        album: newAlbum.name,
+                                        description: description,
+                                        privacy: privacy
+                                    });
+            
+                                    newPhoto
+                                        .save()
+                                        .then(photo => {
+                                            Album.findOneAndUpdate({ $and: [{ author: req.user.username }, { name: newAlbum.name }] }, { $push: { photos: newPhoto.filename } }, (err) => {
+                                                if(err) {
+                                                    console.log(err);
+                                                } else {
+                                                    req.flash(
+                                                        'success_msg',
+                                                        'Your Photo Has Been Uploaded'
+                                                    );
+                                                    res.redirect(req.get('referer'));
+                                                }
+                                            });
+                                        })
+                                        .catch(err => console.log(err));
+                                })
+                                .catch(err => console.log(err));
+                        }
+                    });
+                }
+            })
+            .catch(err => {
                 console.log(err);
-            } else if(albumExists) {
-                let newPhoto = new Photo({
-                    author: author,
-                    filename: file.filename,
-                    album: album,
-                    description: description,
-                    privacy: privacy
-                });
-
-                newPhoto
-                    .save()
-                    .then((photo) => {
-                        Album.findOneAndUpdate({ name: album }, { $push: { photos: newPhoto.filename } }).exec();
-                        req.flash(
-                            'success_msg',
-                            'Your Photo Has Been Uploaded'
-                        );
-                        res.redirect(req.get('referer'));
-                    })
-                    .catch(err => console.log(err));
-            } else {
-                let newAlbum = new Album({
-                    author: req.user.username,
-                    name: album
-                });
-
-                newAlbum
-                    .save()
-                    .then(newAlbum => {
-                        let newPhoto = new Photo({
-                            author: author,
-                            filename: file.filename,
-                            album: newAlbum.name,
-                            description: description,
-                            privacy: privacy
-                        });
-
-                        newPhoto
-                            .save()
-                            .then(photo => {
-                                Album.findOneAndUpdate({ $and: [{ author: req.user.username }, { name: newAlbum.name }] }, { $push: { photos: newPhoto.filename } }, (err) => {
-                                    if(err) {
-                                        console.log(err);
-                                    } else {
-                                        req.flash(
-                                            'success_msg',
-                                            'Your Photo Has Been Uploaded'
-                                        );
-                                        res.redirect(req.get('referer'));
-                                    }
-                                });
-                            })
-                            .catch(err => console.log(err));
-                    })
-                    .catch(err => console.log(err));
-            }
-        })
+            })
     }
 });
 
