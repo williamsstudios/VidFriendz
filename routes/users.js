@@ -286,20 +286,8 @@ router.post('/notes/markasread/:id', (req, res) => {
 
 // Delete Note
 router.post('/notes/delete/:id', (req, res) => {
-    notes.deleteNote(req.params.id);
-    if("success") {
-        req.flash(
-            'success_msg',
-            'You deleted a note'
-        );
-        res.redirect(req.get('referer'));
-    } else {
-        req.flash(
-            'error_msg',
-            'Oops something went wrong'
-        );
-        res.redirect(req.get('referer'));
-    }
+    Note.findOneAndDelete({ _id: req.params.id }).exec();
+    res.redirect(req.get('referer'));
 });
 
 // Subscribe To User
