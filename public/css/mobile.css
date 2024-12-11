@@ -5,7 +5,9 @@ body {
 .navbar {
     background: #bb0000;
 }
-
+a {
+    color: #BB0000;
+}
 a.nav-link {
     color: #FFFFFF;
 }

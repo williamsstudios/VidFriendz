@@ -25,7 +25,7 @@
                     <hr />
                     <% for(var n = 0; n<mynotes.length; n++) { %>
                         <div class="row pt-2 pb-3 border-bottom">
-                            <div class="col-1">
+                            <div class="col-2">
                                 <a href="/users/<%- mynotes[n].initator %>">
                                     <% if(mynotes[n].mynotes.avatar) { %>
                                         <img src="/uploads/<%- mynotes[n].initator %>/<%- mynotes[n].mynotes.avatar %>" alt="<%- mynotes[n].initator %>" width="50" height="50" class="rounded-circle">
@@ -34,7 +34,7 @@
                                     <% } %>
                                 </a>
                             </div>
-                            <div class="col-11">
+                            <div class="col-8">
                                 <div class="row mb-2">
                                     <div class="col-12">
                                         <p class="m-0 p-0">
@@ -43,12 +43,12 @@
                                     </div>
                                 </div>
                                <div class="row">
-                                    <div class="col-3 pr-0">
+                                    <div class="col pr-0">
                                         <form method="Post" action="/users/notes/markasread/<%- mynotes[n]._id %>">
                                             <button type="submit" class="btn btn-success btn-sm">Mark As Read</button>
                                         </form>
                                     </div>
-                                    <div class="col-2 pl-0">
+                                    <div class="col pl-0">
                                         <form method="Post" action="/users/notes/delete/<%- mynotes[n]._id %>">
                                             <button type="submit" class="btn btn-danger btn-sm">Delete</button>
                                         </form>

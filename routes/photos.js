@@ -254,10 +254,10 @@ router.post('/like/:id', (req, res) => {
             console.log(err);
         } else {
             Photo.findOneAndUpdate({ _id: post._id }, { $push: { likes: req.user.username } }).exec();
-            notes.addNewNote(req.user.username, post.author, 'Liked Photo', '<a href="/photos/view/' + photo._id + '">liked your photo</a>');
+            notes.addNewNote(req.user.username, post.author, 'Liked Photo', ' liked your photo <a href="/photos/view/' + photo._id + '">view here</a>');
             if(req.user.subscribers) {
                 req.user.subscribers.forEach((sub) => {
-                    notes.addNewNote(req.user.username, sub, 'Liked Photo', '<a href="/photos/view/' + photo._id + '">liked a photo</a>');
+                    notes.addNewNote(req.user.username, sub, 'Liked Photo', 'liked a photo <a href="/photos/view/' + photo._id + '">view here</a>');
                 });
                 res.redirect(req.get('referer'));
             } else {
@@ -280,10 +280,10 @@ router.post('/comment/like/:id', (req, res) => {
             console.log(err);
         } else {
             Comment.findOneAndUpdate({ post_id: comment.post_id }, { $push: { likes: req.user.username } }).exec();
-            notes.addNewNote(req.user.username, comment.author, 'Liked Comment', '<a href="/photos/view/' + comment.post_id + '">liked your comment</a>');
+            notes.addNewNote(req.user.username, comment.author, 'Liked Comment', 'liked your comment <a href="/photos/view/' + comment.post_id + '">view here</a>');
             if(req.user.subscribers) {
                 req.user.subscribers.forEach((sub) => {
-                    notes.addNewNote(req.user.username, sub, 'Liked Comment', '<a href="/photos/view/' + comment.post_id + '">liked a comment</a>');
+                    notes.addNewNote(req.user.username, sub, 'Liked Comment', ' liked a comment <a href="/photos/view/' + comment.post_id + '">view here</a>');
                 });
                 res.redirect(req.get('referer'));
             } else {
@@ -325,7 +325,7 @@ router.post('/comment/:id', (req, res) => {
                 newComment
                     .save()
                     .then(comment => {
-                        notes.addNewNote(req.user.username, photo.author, 'Photo Comment', 'commented on your photo <a href="/photos/view/' + photo._id + '">Click Here To View It</a>"')
+                        notes.addNewNote(req.user.username, photo.author, 'Photo Comment', 'commented on your photo <a href="/photos/view/' + photo._id + '">View Here</a>"')
                         res.redirect(req.get('referer'));
                     })
                     .catch(err => console.log(err));
