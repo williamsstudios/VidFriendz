@@ -403,7 +403,7 @@ router.get('/albums/:id', ensureAuthenticated, (req, res) => {
                                 if(err) {
                                     console.log(err);
                                 } else if(md.mobile()) {
-                                    res.render('/mobile/gallery', {
+                                    res.render('mobile/gallery', {
                                         title: user.firstname + "'s Photo Albums",
                                         logUser: req.user,
                                         hasNotes: hasNote,
