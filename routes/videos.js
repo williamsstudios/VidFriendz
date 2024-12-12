@@ -163,6 +163,35 @@ router.get('/watch/:id', ensureAuthenticated, (req, res) => {
     });
 });
 
+// Videos Page
+router.get('/:id', ensureAuthenticated, (req, res) => {
+    Video.find({ author: req.params.id }, (err, videos) => {
+        if(err) {
+            console.log(err);
+        } else {
+            User.findOne({ username: req.params.id }, (err, user) => {
+                if(err) {
+                    console.log(err);
+                } else {
+                    Note.find({ $and: [{ receiver: req.user.username }, { did_read: false }] }, (err, hasNote) => {
+                        if(err) {
+                            console.log(err);
+                        } else { 
+                            res.render('videoGal', {
+                                title: user.firstname + " " + user.lastname + "'s Videos",
+                                logUser: req.user,
+                                user: user,
+                                videos: videos,
+                                hasNotes: hasNote
+                            });
+                        }
+                    });
+                }
+            });
+        }
+    })
+});
+
 // Comment Function
 router.post('/comment/:id', (req, res) => {
     Video.findOne({ _id: req.params.id }, (err, video) => {

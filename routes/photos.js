@@ -143,7 +143,6 @@ router.post('/upload', upload.single('image'), (req, res) => {
     }
 });
 
-
 // View Photo
 router.get('/view/:id', ensureAuthenticated, (req, res) => {
     const md = new MobileDetect(req.headers['user-agent']);
@@ -405,7 +404,7 @@ router.get('/albums/:id', ensureAuthenticated, (req, res) => {
                                     console.log(err);
                                 } else if(md.mobile()) {
                                     res.render('/mobile/gallery', {
-                                        title: user.firstname + "'s Photo Gallery",
+                                        title: user.firstname + "'s Photo Albums",
                                         logUser: req.user,
                                         hasNotes: hasNote,
                                         photos: photos,
@@ -414,7 +413,7 @@ router.get('/albums/:id', ensureAuthenticated, (req, res) => {
                                     });
                                 } else {
                                     res.render('gallery', {
-                                        title: user.firstname + "'s Photo Gallery",
+                                        title: user.firstname + "'s Photo Albums",
                                         logUser: req.user,
                                         hasNotes: hasNote,
                                         photos: photos,

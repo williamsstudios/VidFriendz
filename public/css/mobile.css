@@ -12,6 +12,11 @@ a.nav-link {
     color: #FFFFFF;
 }
 
+.form-control:focus, .form-control:hover {
+    outline: none;
+    box-shadow: none;
+}
+
 #likeBtn {
     background: none;
     border: none;
