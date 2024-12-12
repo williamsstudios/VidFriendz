@@ -70,40 +70,49 @@ router.post('/signup', (req, res) => {
             errors: errors
         });
     } else {
-        let newUser = new User({
-            firstname: firstname,
-            lastname: lastname,
-            username: username,
-            email: reg_email,
-            password: pass,
-            gender: gender,
-            country: country,
-            birthday: birthday
-        });
-
-
-        bcrypt.genSalt(10, (err, salt) => {
-            bcrypt.hash(newUser.password, salt, (err, hash) => {
-                if (err) throw err;
-                newUser.password = hash;
-                newUser
-                    .save()
-                    .then(user => {
-                        fs.mkdir("./public/uploads/" + newUser.username, function(err) {
-                            if (err) {
-                                console.log(err)
-                            } else {
-                                req.flash(
-                                    'success_msg',
-                                    'Account Created You May Now Login'
-                                );
-                                res.redirect(req.get('referer'));
-                            }
-                        })
-                    })
-                    .catch(err => console.log(err));
+        const age = helper.calculateAge(birthday);
+        if(age >= 13) {
+            let newUser = new User({
+                firstname: firstname,
+                lastname: lastname,
+                username: username,
+                email: reg_email,
+                password: pass,
+                gender: gender,
+                country: country,
+                birthday: birthday
             });
-        });
+    
+    
+            bcrypt.genSalt(10, (err, salt) => {
+                bcrypt.hash(newUser.password, salt, (err, hash) => {
+                    if (err) throw err;
+                    newUser.password = hash;
+                    newUser
+                        .save()
+                        .then(user => {
+                            fs.mkdir("./public/uploads/" + newUser.username, function(err) {
+                                if (err) {
+                                    console.log(err)
+                                } else {
+                                    req.flash(
+                                        'success_msg',
+                                        'Account Created You May Now Login'
+                                    );
+                                    res.redirect(req.get('referer'));
+                                }
+                            })
+                        })
+                        .catch(err => console.log(err));
+                });
+            });
+        } else {
+            req.flash(
+                'error_msg',
+                'You are not of age to join this website'
+            );
+            res.redirect(req.get('referer'));
+        }
     }
 });
 
@@ -367,7 +376,7 @@ router.get('/:id', ensureAuthenticated, (req, res) => {
     const md = new MobileDetect(req.headers['user-agent']);
     User.findOne({ username : req.params.id }, (err, user) => {
         if(err) {
-           console.log(err);
+        console.log(err);
         } else {
             Post.aggregate([
                 { $match: { $or: [{ author: user.username }, { account_name: user.username }] } },
@@ -448,6 +457,7 @@ router.get('/:id', ensureAuthenticated, (req, res) => {
         }
     });
 });
+
 
 // Edit Profile Picture
 router.post('/edit/avatar', upload.single('avatar'), (req, res) => {

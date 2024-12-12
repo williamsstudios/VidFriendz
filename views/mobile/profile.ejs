@@ -17,289 +17,188 @@
             <%- include("./inc/messages.ejs") %>
         </div>
     </div>
-    <div class="row">
-        <div class="col-12">
-            <div class="card mt-3 bg-dark text-light" style="border-radius: 0px;">     
-                <div class="jumbotron jumbotron-fluid p-0" style="max-height: 200px;">
-                    <% if(user.cover_pic) { %>
-                        <img src="/uploads/<%- user.username %>/<%- user.cover_pic %>" alt="<%- user.username %>" width="100%" height="200">
-                    <% } else { %>
-                        <img src="/img/no_cover.jpg" alt="<%- user.username %>" width="100%" height="200">
-                    <% } %>
-                </div>
-                <div class="card-body text-center">
-                    <div class="row">
+    <div class="row mb-3">
+        <div class="col-12 text-center">
+            <div class="card bg-dark border-0" style="border-radius: 0px;">
+                <% if(user.cover_pic) { %>
+                    <img src="/uploads/<%- user.username %><%- user.cover_pic %>" class="card-img-top" height="200">
+                <% } else { %>
+                    <img src="/img/no_cover.jpg" class="card-img-top" height="200">
+                <% } %>
+                <div class="card-body" style="margin-top: -100px;">
+                    <div class="row mb-3">
                         <div class="col-12">
                             <% if(user.avatar) { %>
-                                <img src="/uploads/<%- user.username %>/<%- user.avatar %>" width="200" height="200" class="rounded-circle">
+                                <img src="/uploads/<%- user.username %>/<%- user.avatar %>" id="avatar" width="150" height="150" class="rounded-circle">
                             <% } else { %>
-                                <img src="/img/no_pic.jpg" width="200" height="200" class="rounded-circle">
+                                <img src="/img/no_pic.jpg" width="150" id="avatar"  height="150" class="rounded-circle">
                             <% } %>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="row mb-3">
                         <div class="col-12">
-                            <h5 class="card-title mt-3"><%- user.firstname %> <%- user.lastname %></h5>
+                            <h5 class="card-title text-light" id="proUser"><%- user.firstname %> <%- user.lastname %></h5>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="row mb-3">
                         <div class="col-12">
-                            <p class="m-0 p-0"><%= helper.calculateAge(user.birthday) %> years old</p>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12">
-                            <p class="m-0 p-0"><%- user.gender %></p>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12">
-                            <% if(user.city && user.state) { %>
-                                <p class="m-0 p-0"><%- user.city %>, <%- user.state %></p>
-                            <% } else { %>
-                                <p class="m-0 p-0"><%- user.country %></p>
-                            <% } %>
-                        </div>
-                    </div>
-                    <% if(user.bio) { %>
-                        <div class="row">
-                            <div class="col-12">
-                                <b>About:</b>
-                                <p><%- user.bio %></p>
-                            </div>
-                        </div>
-                    <% } %>
-                    <div class="row">
-                        <div class="col-12">
-                            <% if(user.username == logUser.username) { %>
-                                <p class="mt-3"><a href="#" data-toggle="modal" data-target="#editModal"  class="btn btn-danger btn-block">Edit Profile</a></p>
+                            <% if(logUser.username == user.username) { %>
+                                <a href="#" data-toggle="modal" data-target="#editModal"  class="btn btn-success btn-lg btn-block"><i class="fa-regular fa-pen-to-square mr-2"></i> Edit Profile</a>
                             <% } else if(logUser.username == user.subscribers) { %>
-                                <form method="POST" action="/users/unsub/<%- user._id %>">
-                                    <button type="submit" class="btn btn-danger btn-block mt-3">Subscribed</button>
-                                </form>
+                                <from method="POST" action="/users/unsub/<%-  user._id %>">
+                                    <button type="submit" class="btn btn-danger btn-lg btn-block"><i class="fa-solid fa-user-minus mr=2"></i> Subscribed</button>
+                                </from>
                             <% } else { %>
-                                <form method="POST" action="/users/sub/<%- user._id %>">
-                                    <button type="submit" class="btn btn-outline-danger btn-block mt-3">Subscribe</button>
-                                </form>
+                                <from method="POST" action="/users/sub/<%-  user._id %>">
+                                    <button type="submit" class="btn btn-outline-danger btn-lg btn-block"><i class="fa-solid fa-user-plus mr-2"></i> Subscribe</button>
+                                </from>
                             <% } %>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-12">
-                            <a href="/photos/albums/<%- user.username %>" class="text-light">Photos</a>
+                        <div class="col">
+                            <a href="/photos/albums/<%- user.username %>" class="nav-link">Photos</a>
+                        </div>
+                        <div class="col">
+                            <a href="/videos/<%- user.username %>" class="nav-link">Videos</a>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="card mt-3 border-0 bg-dark" style="border-radius: 0px;">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card bg-dark border-0 text-light" style="border-radius: 0px;">
+                <div class="card-body">
+                    <h4 class="card-title">About</h4>
+                    <hr />
+                    <p class="m-0 p-0 text-light" style="font-size: 14px;"><%= helper.calculateAge(user.birthday) %> years old</p>
+                    <p class="m-0 p-0 text-light" style="font-size: 14px;"><%- user.gender %></p>
+                    <p class="m-0 p-0 text-light" style="font-size: 14px;">
+                        <% if(user.city && user.state) { %>
+                            <%- user.city %>, <%- user.state %>
+                        <% } else { %>
+                            <%- user.country %>
+                        <% } %>
+                    </p>
+                    <% if(user.bio) { %>
+                        <p class="m-0 p-0 text-light" style="font-size: 14px;"><%- user.bio %></p>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <div class="col-12">
+            <div class="card border-0 bg-dark mt-3">
                 <div class="card-body">
                     <div class="row">
                         <div class="col-2">
-                            <a href="/users/<%- user.username %>">
-                                <% if(user.avatar) { %>
-                                    <img src="/uploads/<%- user.username %>/<%- user.avatar %>" alt="<%- user.username %>" width="40" height="40" class="rounded-circle">
+                            <a href="/users/<%- logUser.username %>">
+                                <% if(logUser.avatar) { %>
+                                    <img src="/uploads/<%- logUser.username %>/<%- logUser.avatar %>" alt="<%- logUser.username %>" width="40" height="40" class="rounded-circle">
                                 <% } else { %>
                                     <img src="/img/no_pic.jpg" alt="<%- logUser.username %>" width="40" height="40" class="rounded-circle">
                                 <% } %>
                             </a>
                         </div>
-                        <div class="col-10" onclick="window.location='/posts/edit'">
+                        <div class="col-10" onclick="window.location='/posts/edit/<%- user.username %>'">
                             <textarea class="form-control form-control-sm" rows="2" cols="0" id="postText" name="postText" placeholder="Write Something New?" style="resize:none; border-radius: 30px; height: 40px; line-height: 20px;"></textarea>
                         </div>
                     </div>
                 </div>
             </div>
-            <% for(var p = 0; p<posts.length; p++) { %>
-                <% if(posts[p].author == user.username && posts[p].privacy == 0) { %>
-                    <div class="card mt-2 border-0 bg-dark" style="border-radius: 0px;">
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-1">
-                                    <a href="/users/<%- posts[p].author %>">
-                                        <% if(posts[p].posts.avatar) { %>
-                                            <img src="/uploads/<%- posts[p].author %>/<%- posts[p].posts.avatar %>" class="rounded-circle" width="50" height="50">
-                                        <% } else { %>
-                                            <img src="/img/no_pic.jpg" class="rounded-circle" width="50" height="50">
-                                        <% } %>
-                                    </a>
-                                </div>
-                                <div class="col-9 pt-1">
-                                    <h6 class="card-title mb-0">
-                                        <a href="/users/<%- posts[p].author %>" class="text-light"><%- posts[p].posts.firstname %> <%- posts[p].posts.lastname %></a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <% if(posts.length > 0) { %>
+                <% for(var p = 0; p<posts.length; p++) { %>
+                    <% if(posts[p].author == logUser.username || posts[p].account_name == logUser.username ) { %>
+                        <div class="card mt-2 border-0 bg-dark" style="border-radius: 0px;">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-2">
+                                        <a href="/users/<%- posts[p].author %>">
+                                            <% if(posts[p].posts.avatar) { %>
+                                                <img src="/uploads/<%- posts[p].author %>/<%- posts[p].posts.avatar %>" class="rounded-circle" width="40" height="40">
+                                            <% } else { %>
+                                                <img src="/img/no_pic.jpg" class="rounded-circle" width="40" height="40">
+                                            <% } %>
+                                        </a>
+                                    </div>
+                                    <div class="col-7">
+                                        <a href="/users/<%- posts[p].author %>" class="text-light" style="font-size: 16px;"><%- posts[p].posts.firstname %> <%- posts[p].posts.lastname %></a>
                                         <% if(posts[p].action != "") { %>
-                                            <span class="text-muted"><%- posts[p].action %></span>
+                                            <span class="text-muted" style="font-size: 10px;"><%- posts[p].action %></span>
                                         <% } %>
-                                    </h6>
-                                    <small class="text-muted"><%= helper.timeSince(posts[p].date_made) %></small>
-                                </div>
-                                <div class="col-2 text-right">
-                                    <a href="#" class="text-light" id="postMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa-solid fa-ellipsis-vertical"></i></a>
-                                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="postMenuButton">
-                                        <a class="dropdown-item" href="#">Report</a>
-                                        <% if(logUser.username == posts[p].author) { %>
-                                            <form method="POST" action="/posts/delete/<%- posts[p]._id %>">
-                                                <button type="submit" class="dropdown-item">Delete</button>
-                                            </form>
-                                        <% } %>
+                                        <p class="m-0 p-0 text-muted" style="font-size: 10px;"><%= helper.timeSince(posts[p].date_made) %></p>
+                                    </div>
+                                    <div class="col-2 text-right">
+                                        <a href="#" class="text-light" id="postMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa-solid fa-ellipsis-vertical"></i></a>
+                                        <div class="dropdown-menu dropdown-menu-right bg-dark" aria-labelledby="postMenuButton">
+                                            <a class="dropdown-item text-light" href="#">Report</a>
+                                            <% if(logUser.username == posts[p].author) { %>
+                                                <form method="POST" action="/posts/delete/<%- posts[p]._id %>">
+                                                    <button type="submit" class="dropdown-item text-light">Delete</button>
+                                                </form>
+                                            <% } %>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="row mt-2 border-bottom">
-                                <div class="col-12 pt-4 pb-3">
-                                    <p class="text-light"><%- posts[p].data %></p>
-                                    <% if(posts[p].image != "") { %>
-                                        <a href="/posts/view/<%- posts[p]._id %>">
-                                            <img src="/uploads/<%- posts[p].author %>/<%- posts[p].image %>" alt="<%- posts[p].author %>" width="100%" height="400">
-                                        </a>
-                                    <% } else if(posts[p].video != "") { %>
-                                        <a href="/posts/view/<%- posts[p]._id %>">
-                                            <video width="100%" height="400" style="background: #000;">
-                                                <source src="/uploads/<%- posts[p].author %>/<%- posts[p].video %>">
-                                            </video>
-                                        </a>
-                                    <% } %>
-                                </div>
-                            </div>
-                            <div class="row mb-4 border-bottom">
-                                <ul class="list-group list-group-horizontal bg-dark border-0 p-0" style="border-radius: 0px;">
-                                    <li class="list-group-item border-0 bg-dark" style="border-radius: 0px;">
-                                        <% if(posts[p].likes == logUser.username) { %>
-                                            <form method="POST" action="/posts/unlike/<%- posts[p]._id %>">
-                                                <button type="submit" id="unlikeBtn"><i class="fa-solid fa-heart mr-2"></i> Liked</button>
-                                            </form>
-                                        <% } else { %>
-                                            <form method="POST" action="/posts/like/<%- posts[p]._id %>">
-                                                <button type="submit" id="likeBtn"><i class="fa-regular fa-heart mr-2"></i> Like</button>
-                                            </form>
-                                        <% } %>
-                                    </li>
-                                    <li class="list-group-item border-0 bg-dark" style="border-radius: 0px;">
-                                        <a href="/posts/view/<%- posts[p]._id %>" id="likeBtn">
-                                            <i class="fa-solid fa-comment mr-2"></i> Comments
-                                        </a>
-                                    </li>
-                                    <% if(posts[p].author != logUser.username) { %>
-                                        <li class="list-group-item border-0 bg-dark" style="border-radius: 0px;">
-                                            <form method="POST" action="/posts/share/<%- posts[p]._id %>">
-                                                <button type="submit" id="shareBtn"><i class="fa-solid fa-share-nodes mr-2"></i> Share</button>
-                                            </form>
-                                        </li>
-                                    <% } %>
-                                </ul>
-                            </div>
-                            <div class="row mb-4">
-                                <div class="col-lg-12">
-                                    <p class="m-0 p-0"><a href="/posts/view/<%- posts[p]._id %>" class="text-light">View more comments</a></p>
-                                </div>
-                            </div>
-                            <% for(var c = 0; c<comments.length; c++) { %>
-                                <% if(comments[c].post_id == posts[p]._id) { %>
-                                    <div class="row text-light">
-                                        <div class="col-lg-1 pl-4">
-                                            <a href="/users/<%- comments[c].author %>">
-                                                <% if(comments[c].comments.avatar) { %>
-                                                    <img src="/uploads/<%- comments[c].author %>/<%- comments[c].comments.avatar %>" width="32" height="32" class="rounded-circle">
-                                                <% } else { %>
-                                                    <img src="/img/no_pic.jpg" width="32" height="32" class="rounded-circle">
-                                                <% } %>
+                                <div class="row mt-3 border-bottom">
+                                    <div class="col-12">
+                                        <p class="text-light"><%- posts[p].data %></p>
+                                        <% if(posts[p].image != "") { %>
+                                            <a href="/posts/view/<%- posts[p]._id %>">
+                                                <img src="/uploads/<%- posts[p].account_name %>/<%- posts[p].image %>" alt="<%- posts[p].author %>" width="100%" height="400" class="mb-3">
                                             </a>
-                                        </div>
-                                        <div class="col-lg-11">
-                                            <div class="commentBox">
-                                                <p class="m-0 p-0" style="font-size: 16px;"><a href="/users/<%- comments[c].author %>" class="text-light"><%- comments[c].comments.firstname %> <%- comments[c].comments.lastname %></a></p>
-                                                <p class="m-0 p-0"><%- comments[c].data %></p> 
-                                            </div>
-                                        </div>
+                                        <% } else if(posts[p].video != "") { %>
+                                            <a href="/posts/view/<%- posts[p]._id %>">
+                                                <video width="100%" height="400" style="background: #000;">
+                                                    <source src="/uploads/<%- posts[p].author %>/<%- posts[p].video %>">
+                                                </video>
+                                            </a>
+                                        <% } %>
                                     </div>
-                                    <div class="row mb-2 mt-3 mb-3">
-                                        <div class="col-lg-1"></div>
-                                        <div class="col-lg-11 pl-5">
-                                            <ul class="list-group list-group-horizontal bg-dark p-0 border-0" style="border-radius: 0px;">
-                                                <li class="list-group-item p-0 bg-dark pr-3 border-0" style="border-radius: 0px;">
-                                                    <button id="commentLike" class="text-light"><%= helper.timeSince(comments[c].date_made) %></button>
-                                                </li>
-                                                <li class="list-group-item p-0 pr-3 bg-dark border-0" style="border-radius: 0px;">
-                                                    <% if(comments[c].likes == logUser.username) { %>
-                                                        <form method="POST" action="/posts/unlikeComment/<%- comments[c]._id %>">
-                                                            <button type="submit" id="commentUnlike"><i class="fa-solid fa-heart mr-1"></i> Liked</button>
+                                </div>
+                                <div class="row border-bottom">
+                                    <div class="col-12">
+                                        <ul class="list-group list-group-horizontal text-center bg-dark border-0 p-0" style="border-radius: 0px; font-size: 18px;">
+                                            <% if(posts[p].author != logUser.username) { %>
+                                                <li class="list-group-item border-0 text-center bg-dark" style="border-radius: 0px;">
+                                                    <% if(posts[p].likes == logUser.username) { %>
+                                                        <form method="POST" action="/posts/unlike/<%- posts[p]._id %>">
+                                                            <button type="submit" id="unlikeBtn"><i class="fa-solid fa-heart mr-1"></i> Liked</button>
                                                         </form>
                                                     <% } else { %>
-                                                        <form method="POST" action="/posts/likeComment/<%- comments[c]._id %>">
-                                                            <button type="submit" id="commentLike" class="text-light"><i class="fa-regular fa-heart mr-1"></i> Like</button>
+                                                        <form method="POST" action="/posts/like/<%- posts[p]._id %>">
+                                                            <button type="submit" id="likeBtn"><i class="fa-regular fa-heart mr-1"></i> Like</button>
                                                         </form>
                                                     <% } %>
                                                 </li>
-                                                <% if(comments[c].author == logUser.username) { %>
-                                                    <li class="list-group-item p-0 bg-dark pr-3 border-0" style="border-radius: 0px;">
-                                                        <form method="POST" action="/posts/deleteComment/<%- comments[c]._id %>">
-                                                            <button type="submit" id="commentLike" class="text-light"><i class="fa-solid fa-trash mr-1"></i> Delete</button>
-                                                        </form>
-                                                    </li>
-                                                <% } %>
-                                            </ul>
-                                        </div>
+                                            <% } %>
+                                            <li class="list-group-item border-0 text-center bg-dark" style="border-radius: 0px;">
+                                                <a href="/posts/view/<%- posts[p]._id %>" type="button" id="likeBtn">
+                                                    <i class="fa-solid fa-comment mr-1"></i> Comments
+                                                </a>
+                                            </li>
+                                            <% if(posts[p].author != logUser.username) { %>
+                                                <li class="list-group-item border-0 text-center bg-dark p-3" style="border-radius: 0px;">
+                                                    <form method="POST" action="/posts/share/<%- posts[p]._id %>">
+                                                        <button type="submit" id="shareBtn"><i class="fa-solid fa-share-nodes mr-1"></i> Share</button>
+                                                    </form>
+                                                </li>
+                                            <% } %>
+                                        </ul>
                                     </div>
-                                <% } %>
-                            <% } %>
-                            <div class="row pb-2">
-                                <div class="col-lg-12">
-                                    <form method="POST" action="/posts/comment/<%- posts[p]._id %>">
-                                        <div class="row mt-2">
-                                            <div class="col-lg-11">
-                                                <textarea id="commentText" name="commentText" style="resize: none;" class="form-control" placeholder="Write A Reply"></textarea>
-                                            </div>
-                                            <div class="col-lg-1">
-                                                <button type="submit" id="sendBtn"><i class="fa-solid fa-paper-plane"></i></button>
-                                            </div>
-                                        </div>
-                                    </form>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    <% } %>
                 <% } %>
             <% } %>
-            <div class="card mt-3 border-0 bg-dark text-light" style="border-radius: 0px;">
-                <div class="card-body">
-                    <h4 class="card-title">Videos</h4>
-                    <hr />
-                    <% if(videos.length >= 1) { %>
-                        <div class="row">
-                            <% for(var v = 0; v<videos.length; v++) { %>
-                                <div class="col-lg-3">
-                                    <a href="/videos/watch/<%- videos[v]._id %>">
-                                        <% if(videos[v].thumbnail) { %>
-                                            <img src="/uploads/<%- videos[v].author %>/<%- videos[v].thumbnail %>" width="100%" height="100">
-                                        <% } else { %>
-                                            <img src="/img/no_thumb.png" width="100%" height="100">
-                                        <% } %>
-                                    </a>
-                                </div>
-                            <% } %>
-                        </div>
-                    <% } else { %>
-                        <h6 class="card-title">This user has not uploaded any videos</h6>
-                    <% } %>
-                </div>
-            </div>
-            <div class="card mt-3 border-0 bg-dark text-light">
-                <div class="card-body">
-                    <h4 class="card-title">Photos</h4>
-                    <hr />
-                    <% if(photos.length >= 1) { %>
-                        <div class="row">
-                            <% for(var p = 0; p<photos.length; p++) { %>
-                                <div class="col-lg-3" style="background: #000; cursor: pointer;">
-                                     <img src="/uploads/<%- user.username %>/<%- photos[p].filename %>" alt="<%- photos[p].author %>" width="100%" height="100">                               
-                                </div>
-                            <% } %>
-                        </div>
-                    <% } else { %>
-                        <h6 class="card-title">This user has not uploaded any photos</h6>
-                    <% } %>
-                </div>
-            </div>
-
         </div>
     </div>
 </div>

@@ -19,17 +19,12 @@
     </div>
     <div class="row">
         <div class="col-12"> 
-            <div class="card bg-dark border-0 text-light" style="border-radius:0px">
+            <div class="card bg-dark border-0 text-light" style="border-radius:0px;">
                 <div class="card-body">
                     <div class="row pb-3 border-bottom">
-                        <div class="col-11">
+                        <div class="col-9">
                             <h5 class="card-title"><%- user.firstname %>'s Photo Albums</h5>
                         </div>
-                        <% if(user.username == logUser.username) { %>
-                            <div class="col-1">
-                                <a href="/photos/upload" class="btn btn-danger btn-sm">Upload</a>
-                            </div>
-                        <% } %>
                     </div>
                     <div class="row mt-3">
                         <% for(var a = 0; a<albums.length; a++) { %>

@@ -17,7 +17,11 @@
                 </span>
             </div>
             <div class="col-10">
-                <span class="navbar-brand text-light">Create Post</span>
+                <% if(user.username != logUser.username) { %>
+                    <span class="navbar-brand text-light">On <%- user.firstname %> <%- user.lastname %>'s Profile</span>
+                <% } else { %>
+                    <span class="navbar-brand text-light">Create Post</span>
+                <% } %>
             </div>
         </div>
     </div>

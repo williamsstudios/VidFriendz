@@ -58,6 +58,9 @@ const UserSchema = new mongoose.Schema({
     privacy: {
         type: Boolean,
         default: false
+    },
+    block_list: {
+        type: [String]
     }
 });
 

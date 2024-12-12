@@ -21,36 +21,25 @@
         <div class="col-12">
             <div class="card mt-2 border-0 bg-dark" style="border-radius: 0px;">
                 <div class="card-body">
-                    <div class="row">
-                        <div class="col-3">
-                            <a href="/users/<%- post.author %>">
-                                <% if(postUser.avatar) { %>
-                                    <img src="/uploads/<%- post.author %>/<%- postUser.avatar %>" class="rounded-circle" width="40" height="40">
+                    <div class="row mb-3">
+                        <div class="col-2">
+                            <a href="/users/<%- logUser.username %>">
+                                <% if(logUser.avatar) { %>
+                                    <img src="/uploads/<%- logUser.username %>/<%- logUser.avatar %>" alt="<%- logUser.username %>" width="40" height="40" class="rounded-circle">
                                 <% } else { %>
-                                    <img src="/img/no_pic.jpg" class="rounded-circle" width="40" height="40">
+                                    <img src="/img/no_pic.jpg" alt="<%- logUser.username %>" width="40" height="40" class="rounded-circle">
                                 <% } %>
                             </a>
                         </div>
                         <div class="col-7">
-                            <a href="/users/<%- post.author %>" class="text-light" style="font-size: 12px;"><%- postUser.firstname %> <%- postUser.lastname %></a>
+                            <a href="/users/<%- post.author %>" class="text-light" style="font-size: 14px;"><%- postUser.firstname %> <%- postUser.lastname %></a>
                             <% if(post.action != "") { %>
                                 <span class="text-muted" style="font-size: 10px;"><%- post.action %></span>
                             <% } %>
                             <p class="m-0 p-0" style="font-size: 10px;"><small class="text-muted"><%= helper.timeSince(post.date_made) %></small></p>
                         </div>
-                        <div class="col-2 text-right">
-                            <a href="#" class="text-light" id="postMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa-solid fa-ellipsis-vertical"></i></a>
-                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="postMenuButton">
-                                <a class="dropdown-item" href="#">Report</a>
-                                <% if(logUser.username == post.author) { %>
-                                    <form method="POST" action="/posts/delete/<%- post._id %>">
-                                        <button type="submit" class="dropdown-item">Delete</button>
-                                    </form>
-                                <% } %>
-                            </div>
-                        </div>
                     </div>
-                    <div class="row mt-3 border-bottom">
+                    <div class="row border-bottom">
                         <div class="col-12">
                             <p class="text-light"><%- post.data %></p>
                             <% if(post.image != "") { %>
@@ -66,32 +55,29 @@
                             <% } %>
                         </div>
                     </div>
-                    <div class="row border-bottom">
-                        <ul class="list-group list-group-horizontal text-center bg-dark border-0 p-0" style="border-radius: 0px;">
-                            <li class="list-group-item border-0 text-center mr-1 bg-dark" style="border-radius: 0px;">
-                                <% if(post.likes == logUser.username) { %>
-                                    <form method="POST" action="/posts/unlike/<%- post._id %>">
-                                        <button type="submit" id="unlikeBtn"><i class="fa-solid fa-heart mr-2"></i> Liked</button>
+                    <% if(post.author != logUser.username) { %>
+                        <div class="row border-bottom">
+                            <ul class="list-group list-group-horizontal text-center bg-dark border-0 p-0" style="border-radius: 0px; font-size: 18px;">
+                                <li class="list-group-item border-0 text-center bg-dark" style="border-radius: 0px;">
+                                    <% if(post.likes == logUser.username) { %>
+                                        <form method="POST" action="/posts/unlike/<%- post._id %>">
+                                            <button type="submit" id="unlikeBtn"><i class="fa-solid fa-heart mr-1"></i> Liked</button>
+                                        </form>
+                                    <% } else { %>
+                                        <form method="POST" action="/posts/like/<%- post._id %>">
+                                            <button type="submit" id="likeBtn"><i class="fa-regular fa-heart mr-1"></i> Like</button>
+                                        </form>
+                                    <% } %>
+                                </li>
+                                <li class="list-group-item border-0 text-center bg-dark p-3" style="border-radius: 0px;">
+                                    <form method="POST" action="/posts/share/<%- posts[p]._id %>">
+                                        <button type="submit" id="shareBtn"><i class="fa-solid fa-share-nodes mr-1"></i> Share</button>
                                     </form>
-                                <% } else { %>
-                                    <form method="POST" action="/posts/like/<%- post._id %>">
-                                        <button type="submit" id="likeBtn"><i class="fa-regular fa-heart mr-2"></i> Like</button>
-                                    </form>
-                                <% } %>
-                            </li>
-                            <li class="list-group-item border-0 text-center mr-1 bg-dark" style="border-radius: 0px;">
-                                <a href="/posts/view/<%- post._id %>" type="button" id="likeBtn">
-                                    <i class="fa-solid fa-comment mr-2"></i> Comments
-                                </a>
-                            </li>
-                            <li class="list-group-item border-0 text-center bg-dark" style="border-radius: 0px;">
-                                <form method="POST" action="/posts/share/<%- post._id %>">
-                                    <button type="submit" id="shareBtn"><i class="fa-solid fa-share-nodes mr-2"></i> Share</button>
-                                </form>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="row pb-2">
+                                </li>
+                            </ul>
+                        </div>
+                    <% } %>
+                    <div class="row">
                         <div class="col-12">
                             <form method="POST" action="/posts/comment/<%- post._id %>">
                                 <div class="row mt-2">
@@ -117,7 +103,7 @@
                                         <% } %>
                                     </a>
                                 </div>
-                                <div class="col-10 pl-0">
+                                <div class="col-7 pl-0">
                                     <div class="commentBox">
                                         <p class="m-0 p-0"><a href="/users/<%- comments[c].author %>" class="text-light"><%- comments[c].comments.firstname %> <%- comments[c].comments.lastname %></a></p>
                                         <p class="m-0 p-0"><%- comments[c].data %></p> 
@@ -126,7 +112,7 @@
                             </div>
                             <div class="row mb-2">
                                 <div class="col-1"></div>
-                                <div class="col-11">
+                                <div class="col-9">
                                     <ul class="list-group list-group-horizontal float-right p-0 border-0 bg-dark text-light" style="border-radius: 0px;">
                                         <li class="list-group-item p-0 pr-3 border-0 bg-dark text-light" style="border-radius: 0px;">
                                             <button id="commentLike"><%= helper.timeSince(comments[c].date_made) %></button>

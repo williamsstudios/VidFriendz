@@ -90,3 +90,10 @@ a.nav-link {
     box-shadow: none;
     padding: 0px;
 }
+
+#avatar {
+    box-shadow: 3px 3px 3px #000;
+}
+#proUser {
+    text-shadow: 2px 2px 2px #000;
+}

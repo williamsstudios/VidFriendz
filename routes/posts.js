@@ -60,6 +60,10 @@ router.post('/new/:id', upload.single('image'), (req, res, next) => {
         newPost
             .save()
             .then(post => {
+                req.flash(
+                    'success_msg',
+                    'Posted!'
+                );
                 res.redirect(req.get('referer'));
             })
             .catch(err => console.log(err));
@@ -125,6 +129,10 @@ router.post('/new/:id', upload.single('image'), (req, res, next) => {
                                                 if(err) {
                                                     console.log(err);
                                                 } else {
+                                                    req.flash(
+                                                        'success_msg',
+                                                        'Posted!'
+                                                    );
                                                     res.redirect(req.get('referer'));
                                                 }
                                             });
@@ -159,6 +167,10 @@ router.post('/new/:id', upload.single('image'), (req, res, next) => {
                     newVideo
                         .save()
                         .then(video => {
+                            req.flash(
+                                'success_msg',
+                                'Posted!'
+                            );
                             res.redirect(req.get('referer'));
                         })
                         .catch(err => console.log(err));
@@ -263,18 +275,24 @@ router.get('/view/:id', ensureAuthenticated, (req, res) => {
 });
 
 // Post Edit Page
-router.get('/edit', ensureAuthenticated, (req, res) => {
+router.get('/edit/:id', ensureAuthenticated, (req, res) => {
     const md = new MobileDetect(req.headers['user-agent']);
-
-    if(md.mobile()) {
-        res.render('mobile/edit_post', {
-            title: 'Edit Post',
-            logUser: req.user,
-            hasNotes: ""
-        });
-    } else {
-        res.redirect('/');
-    }
+    User.findOne({ username: req.params.id }, (err, user) => {
+        if(err) {
+            console.log(err);
+        } else {        
+            if(md.mobile()) {
+                res.render('mobile/edit_post', {
+                    title: 'Edit Post',
+                    logUser: req.user,
+                    hasNotes: "",
+                    user: user
+                });
+            } else {
+                res.redirect('/');
+            }
+        }
+    })
 });
 
 // Like Post
@@ -284,10 +302,10 @@ router.post('/like/:id', (req, res) => {
             console.log(err);
         } else {
             Post.findOneAndUpdate({ _id: post._id }, { $push: { likes: req.user.username } }).exec();
-            notes.addNewNote(req.user.username, post.author, 'Liked Post', ' liked your post <a href="/posts/view/' + post._id + '">view here</a>');
+            notes.addNewNote(req.user.username, post.author, 'Liked Post', ' liked your post <a href="/posts/view/' + post._id + '"> view here</a>');
             if(req.user.subscribers) {
                 req.user.subscribers.forEach((sub) => {
-                    notes.addNewNote(req.user.username, sub, 'Liked Post', ' liked a post <a href="/posts/view/' + post._id + '">view here</a>');
+                    notes.addNewNote(req.user.username, sub, 'Liked Post', ' liked a post <a href="/posts/view/' + post._id + '"> view here</a>');
                 });
                 res.redirect(req.get('referer'));
             } else {
@@ -305,58 +323,8 @@ router.post('/unlike/:id', (req, res) => {
 
 // Delete Post
 router.post('/delete/:id', (req, res) => {
-    Post.findOne({ _id: req.params.id }, (err, post) => {
-        if(err) {
-            console.log(err);
-        } else if(post.image != "") {
-            const filePath = './public/uploads/' + req.user.username + '/' + post.image;
-            fs.unlinkSync(filePath);
-            Photo.findOneAndDelete({ post_id: post._id }, (err, photo) => {
-                if(err) {
-                    console.log(err);
-                } else {
-                    Album.findOneAndUpdate({ $and: [{ author: req.user.username }, { name: photo.album }] }, { $pull: { photos: photo._id } }, (err) => {
-                        if(err) {
-                            console.log(err);
-                        } else {
-                            Post.findOneAndDelete({ _id: req.params.id }, (err) => {
-                                if(err) {
-                                    console.log(err);
-                                } else {
-                                    res.redirect(req.get('referer'));
-                                }
-                            });
-                        }
-                    })
-                    
-                }
-            });
-        } else if(post.video != "") {
-            const filePath = './public/uploads/' + req.user.username + '/' + post.video;
-            fs.unlinkSync(filePath);
-            Video.findOneAndDelete({ post_id: post._id }, (err, video) => {
-                if(err) {
-                    console.log(err);
-                } else {
-                    Post.findOneAndDelete({ _id: req.params.id }, (err) => {
-                        if(err) {
-                            console.log(err);
-                        } else {
-                            res.redirect(req.get('referer'));
-                        }
-                    });
-                }
-            });
-        } else {
-            Post.findByIdAndDelete({ _id: req.params.id }, (err) => {
-                if(err) {
-                    console.log(err);
-                } else {
-                    res.redirect(req.get('referer'));
-                }
-            })
-        } 
-    })
+    Post.findByIdAndDelete({ _id: req.params.id }).exec();
+    res.redirect(req.get('referer'));
 });
 
 // Comment Function
@@ -387,7 +355,7 @@ router.post('/comment/:id', (req, res) => {
                 newComment
                     .save()
                     .then(comment => {
-                        notes.addNewNote(req.user.username, post.author, "Post Comment", ' commented on your post <a href="/posts/view/' + post._id + '">view here</a>')
+                        notes.addNewNote(req.user.username, post.author, "Post Comment", ' commented on your post <a href="/posts/view/' + post._id + '"> view here</a>')
                         res.redirect(req.get('referer'));
                     })
                     .catch(err => console.log(err));
@@ -403,10 +371,10 @@ router.post('/likeComment/:id', (req, res) => {
             console.log(err);
         } else {
             Comment.findOneAndUpdate({ _id: comment._id }, { $push: { likes: req.user.username } }).exec();
-            notes.addNewNote(req.user.username, comment.author, 'Liked Comment', ' liked your comment <a href="/posts/view/' + comment.post_id + '">view here</a>');
+            notes.addNewNote(req.user.username, comment.author, 'Liked Comment', ' liked your comment <a href="/posts/view/' + comment.post_id + '"> view here</a>');
             if(req.user.subscribers) {
                 req.user.subscribers.forEach((sub) => {
-                    notes.addNewNote(req.user.username, sub, 'Liked Comment', ' liked a comment <a href="/posts/view/' + comment.post_id + '">view here</a>');
+                    notes.addNewNote(req.user.username, sub, 'Liked Comment', ' liked a comment <a href="/posts/view/' + comment.post_id + '"> view here</a>');
                 });
                 res.redirect(req.get('referer'));
             } else {
