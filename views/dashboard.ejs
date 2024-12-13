@@ -161,17 +161,19 @@
                                         </div>
                                         <div class="row mb-4 border-bottom">
                                             <ul class="list-group list-group-horizontal bg-dark border-0 p-0" style="border-radius: 0px;">
-                                                <li class="list-group-item border-0 bg-dark" style="border-radius: 0px;">
-                                                    <% if(posts[p].likes == logUser.username) { %>
-                                                        <form method="POST" action="/posts/unlike/<%- posts[p]._id %>">
-                                                            <button type="submit" id="unlikeBtn"><i class="fa-solid fa-heart mr-2"></i> Liked</button>
-                                                        </form>
-                                                    <% } else { %>
-                                                        <form method="POST" action="/posts/like/<%- posts[p]._id %>">
-                                                            <button type="submit" id="likeBtn"><i class="fa-regular fa-heart mr-2"></i> Like</button>
-                                                        </form>
-                                                    <% } %>
-                                                </li>
+                                                <% if(comments[c].author != logUser.username) { %>
+                                                    <li class="list-group-item border-0 bg-dark" style="border-radius: 0px;">
+                                                        <% if(posts[p].likes == logUser.username) { %>
+                                                            <form method="POST" action="/posts/unlike/<%- posts[p]._id %>">
+                                                                <button type="submit" id="unlikeBtn"><i class="fa-solid fa-heart mr-2"></i> Liked</button>
+                                                            </form>
+                                                        <% } else { %>
+                                                            <form method="POST" action="/posts/like/<%- posts[p]._id %>">
+                                                                <button type="submit" id="likeBtn"><i class="fa-regular fa-heart mr-2"></i> Like</button>
+                                                            </form>
+                                                        <% } %>
+                                                    </li>
+                                                <% } %>
                                                 <li class="list-group-item border-0 bg-dark" style="border-radius: 0px;">
                                                     <a href="/posts/view/<%- posts[p]._id %>" id="likeBtn">
                                                         <i class="fa-solid fa-comment mr-2"></i> Comments

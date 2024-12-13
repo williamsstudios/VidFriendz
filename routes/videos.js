@@ -131,31 +131,48 @@ router.get('/watch/:id', ensureAuthenticated, (req, res) => {
                             $unwind: "$comments"
                         }
                     ]).then(comments => {
-                        Note.find({ $and: [{ receiver: req.user.username }, { did_read: false }] }, (err, hasNote) => {
-                            if(err) {
-                                console.log(err);
-                            } else if(md.mobile()) {
-                                res.render('mobil/watch', {
-                                    title: video.title,
-                                    logUser: req.user,
-                                    video: video,
-                                    vidUser: vidUser,
-                                    hasNotes: hasNote,
-                                    helper: helper,
-                                    comments: comments
-                                });
-                            } else {
-                                res.render('watch', {
-                                    title: video.title,
-                                    logUser: req.user,
-                                    video: video,
-                                    vidUser: vidUser,
-                                    hasNotes: hasNote,
-                                    helper: helper,
-                                    comments: comments
-                                });
+                        Video.aggregate([
+                            { $match: { $and: [{ category: video.category }, { _id: { $ne: video._id } }] } },
+                            {
+                                $lookup: {
+                                    from: "users",
+                                    localField: "author",
+                                    foreignField: "username",
+                                    as: "moreVideos"
+                                }
+                            },
+                            {
+                                $unwind: "$moreVideos"
                             }
-                        });
+                        ]).then(moreVideos => {
+                            Note.find({ $and: [{ receiver: req.user.username }, { did_read: false }] }, (err, hasNote) => {
+                                if(err) {
+                                    console.log(err);
+                                } else if(md.mobile()) {
+                                    res.render('mobile/watch', {
+                                        title: video.title,
+                                        logUser: req.user,
+                                        video: video,
+                                        vidUser: vidUser,
+                                        hasNotes: hasNote,
+                                        helper: helper,
+                                        comments: comments,
+                                        moreVideos: moreVideos
+                                    });
+                                } else {
+                                    res.render('watch', {
+                                        title: video.title,
+                                        logUser: req.user,
+                                        video: video,
+                                        vidUser: vidUser,
+                                        hasNotes: hasNote,
+                                        helper: helper,
+                                        comments: comments,
+                                        moreVideos: moreVideos
+                                    });
+                                }
+                            });
+                        }).catch(err => console.log(err));
                     }).catch(err => console.log(err));
                 }
             });

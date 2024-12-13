@@ -26,11 +26,11 @@
                             <h5 class="card-title"><%- user.firstname %>'s Videos</h5>
                         </div>
                     </div>
-                    <div class="row mt-3">
-                        <% for(var v = 0; v<videos.length; v++) { %>
-                            <div class="col-2">
+                    <% for(var v = 0; v<videos.length; v++) { %>
+                        <div class="row mt-2">
+                            <div class="col-12">
                                 <div class="card bg-dark border-0" style="cursor: pointer; " onclick="window.location='/videos/watch/<%- videos[v]._id %>'">
-                                    <% if(videos[v].thumbnail != "") { %>
+                                    <% if(videos[v].thumbnail) { %>
                                         <img src="/uploads/<%- videos[v].author %>/<%- videos[v].thumbnail %>" class="card-img-top">
                                     <% } else { %>
                                         <img src="/img/no_thumb.png" class="card-img-top">
@@ -39,9 +39,9 @@
                                         <h5 class="card-title"><%- videos[v].title %></h5>
                                     </div>
                                 </div>
-                            </div>
-                        <% } %>
-                    </div>
+                            </div>   
+                        </div>
+                    <% } %>
                 </div>
             </div>
         </div>

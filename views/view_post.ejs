@@ -51,17 +51,19 @@
                     </div>
                     <div class="row mb-4">
                         <ul class="list-group list-group-horizontal border-0 p-0 bg-dark" style="border-radius: 0px;">
-                            <li class="list-group-item border-0 bg-dark" style="border-radius: 0px;">
-                                <% if(post.likes == logUser.username) { %>
-                                    <form method="POST" action="/posts/unlike/<%- post._id %>">
-                                        <button type="submit" id="unlikeBtn"><i class="fa-solid fa-heart mr-2"></i> Liked</button>
-                                    </form>
-                                <% } else { %>
-                                    <form method="POST" action="/posts/like/<%- post._id %>">
-                                        <button type="submit" id="likeBtn"><i class="fa-regular fa-heart mr-2"></i> Like</button>
-                                    </form>
-                                <% } %>
-                            </li>
+                            <% if(post.author != logUser.username) { %>
+                                <li class="list-group-item border-0 bg-dark" style="border-radius: 0px;">
+                                    <% if(post.likes == logUser.username) { %>
+                                        <form method="POST" action="/posts/unlike/<%- post._id %>">
+                                            <button type="submit" id="unlikeBtn"><i class="fa-solid fa-heart mr-2"></i> Liked</button>
+                                        </form>
+                                    <% } else { %>
+                                        <form method="POST" action="/posts/like/<%- post._id %>">
+                                            <button type="submit" id="likeBtn"><i class="fa-regular fa-heart mr-2"></i> Like</button>
+                                        </form>
+                                    <% } %>
+                                </li>
+                            <% } %>
                             <% if(logUser.username != post.author) { %>
                                 <li class="list-group-item bg-dark border-0">
                                     <form method="POST" action="/posts/share/<%- post._id %>">
@@ -116,17 +118,19 @@
                                         <li class="list-group-item p-0 pr-3 border-0 bg-dark text-light" style="border-radius: 0px;">
                                             <button id="commentLike"><%= helper.timeSince(comments[c].date_made) %></button>
                                         </li>
-                                        <li class="list-group-item p-0 pr-3 border-0 bg-dark text-light" style="border-radius: 0px;">
-                                            <% if(comments[c].likes == logUser.username) { %>
-                                                <form method="POST" action="/posts/unlikeComment/<%- comments[c]._id %>">
-                                                    <button type="submit" id="commentUnlike"><i class="fa-solid fa-heart mr-1"></i> Liked</button>
-                                                </form>
-                                            <% } else { %>
-                                                <form method="POST" action="/posts/likeComment/<%- comments[c]._id %>">
-                                                    <button type="submit" id="commentLike"><i class="fa-regular fa-heart mr-1"></i> Like</button>
-                                                </form>
-                                            <% } %>
-                                        </li>
+                                        <% if(comments[c].author != logUser.username) { %>
+                                            <li class="list-group-item p-0 pr-3 border-0 bg-dark text-light" style="border-radius: 0px;">
+                                                <% if(comments[c].likes == logUser.username) { %>
+                                                    <form method="POST" action="/posts/unlikeComment/<%- comments[c]._id %>">
+                                                        <button type="submit" id="commentUnlike"><i class="fa-solid fa-heart mr-1"></i> Liked</button>
+                                                    </form>
+                                                <% } else { %>
+                                                    <form method="POST" action="/posts/likeComment/<%- comments[c]._id %>">
+                                                        <button type="submit" id="commentLike"><i class="fa-regular fa-heart mr-1"></i> Like</button>
+                                                    </form>
+                                                <% } %>
+                                            </li>
+                                        <% } %>
                                         <% if(comments[c].author == logUser.username) { %>
                                             <li class="list-group-item p-0 pr-3 border-0 bg-dark text-light" style="border-radius: 0px;">
                                                 <form method="POST" action="/posts/deleteComment/<%- comments[c]._id %>">

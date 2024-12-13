@@ -11,16 +11,16 @@
 </head>
 <body>
 <%- include("./inc/header.ejs") %>
-<div class="container-fluid" style="margin-top: 66px;">
+<div class="container-fluid" style="margin-top: 56px;">
     <div class="row">
         <div class="col-lg-12">
             <%- include("./inc/messages.ejs") %>
         </div>
     </div>
-    <div class="row">
-        <div class="col-12">
+    <div class="row mb-2">
+        <div class="col-12 p-0">
             <div id="video_player_box">
-                <video id="my_video" width="100%" height="700" poster="/uploads/<%- video.author %>/<%- video.thumbnail %>">
+                <video id="my_video" width="100%" height="300">
                     <source src="/uploads/<%- video.author %>/<%- video.filename %>">
                 </video>
                 <div id="video_controls_bar">
@@ -32,97 +32,112 @@
                     <button id="fullScreenBtn"><i class="fa-solid fa-expand"></i></button>
                 </div>
             </div>
+            
+        </div>
+    </div>
+    <div class="row mb-2">
+        <div class="col-12">
             <div class="card mt-2 border-0 bg-dark" style="border-radius: 0px;">
                 <div class="card-body">
                     <div class="row mb-2">
                         <div class="col-12">
-                            <h5 class="card-title text-light"><%- video.title %></h5>
+                            <h6 class="card-title text-light"><%- video.title %></h6>
                         </div>
                     </div>
                     <div class="row mb-4">
-                        <div class="col-1">
-                            <a href="/users/<%- video.author %>">
+                        <div class="col-12">
+                            <p class="m-0 p-0 text-light" style="font-size: 10px;"><b><%- video.views.length %> views &bull; <%= helper.timeSince(video.upload_date) %></b></p>
+                            <p class="m-0 p-0 text-light" style="font-size: 14px;"><%- video.description %></p>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-2">
+                            <a href="/users/<%- vidUser.username %>">
                                 <% if(vidUser.avatar) { %>
-                                    <img src="/uploads/<%- video.author %>/<%- vidUser.avatar %>" width="50" height="50" class="rounded-circle">
+                                    <img src="/uploads/<%- video.author %>/<%- vidUser.avatar %>" width="30" height="30" class="rounded-circle">
                                 <% } else { %>
-                                    <img src="/img/no_pic.jpg" width="50" height="50" class="rounded-circle">
+                                    <img src="/img/no_pic.jpg" width="30" height="30" class="rounded-circle">
                                 <% } %>
                             </a>
                         </div>
-                        <div class="col-2 pl-0 pt-2">
-                            <h6 class="card-title mb-0">
-                                <a href="/users/<%- video.author %>" class="text-light"><%- vidUser.firstname %> <%- vidUser.lastname %></a>
-                            </h6>
-                            <p class="text-muted p-0 m-0"><%- vidUser.subscribers.length %> subscribers</p>
+                        <div class="col-6">
+                            <p class="m-0 p-0 text-light" style="font-size: 14px;">
+                                <a href="/users/<%- vidUser.username %>" class="text-light">
+                                    <%- vidUser.firstname %> <%- vidUser.lastname %>
+                                </a>
+                            </p>
                         </div>
-                        <div class="col-2 pl-0 pt-2">
-                            <% if(logUser.username == video.author) { %>
-                                <a href="/videos/edit/<%- video._id %>" class="btn btn-danger btn-block">Edit Video</a>
-                            <% } else if(logUser.username == vidUser.subscribers) { %>
+                        <div class="col-2">
+                            <% if(video.author == logUser.username) { %>
+                                <a href="/videos/edit/<%- video._id %>" class="btn btn-danger btn-sm">Edit</a>
+                            <% } else if(vidUser.subscribers == logUser.username) { %>
                                 <form method="POST" action="/users/unsub/<%- vidUser._id %>">
-                                    <button type="submit" class="btn btn-danger btn-block">Subscribed</button>
+                                    <button type="submit" class="btn btn-danger btn-sm">Subscribed</button>
                                 </form>
                             <% } else { %>
                                 <form method="POST" action="/users/sub/<%- vidUser._id %>">
-                                    <button type="submit" class="btn btn-outline-danger btn-block">Subscribe</button>
-                                </form>
-                            <% } %>
-                        </div>
-                        <div class="col-7 pt-2">
-                            <% if(logUser.username == video.likes) { %>
-                                <form method="POST" action="/videos/unlike/<%- video._id %>">
-                                    <button type="submit" id="vidUnlikeBtn"><i class="fa-solid fa-heart"></i> <%- video.likes.length %></button>
-                                </form>
-                            <% } else { %>
-                                <form method="POST" action="/videos/like/<%- video._id %>">
-                                    <button type="submit" id="vidlikeBtn"><i class="fa-regular fa-heart"></i> <%- video.likes.length %></button>
+                                    <button type="submit" class="btn btn-outline-danger btn-sm">Subscribe</button>
                                 </form>
                             <% } %>
                         </div>
                     </div>
                     <div class="row mb-2">
                         <div class="col-12">
-                            <div class="card border-0 bg-dark text-light" style="border-radius: 0px;">
-                                <div class="card-body">
-                                    <div class="row">
-                                        <div class="col-lg-12">
-                                            <p><b><%- video.views.length %> views &bull; <%= helper.timeSince(video.upload_date) %></b></p>
-                                            <p><%- video.description %></p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            <ul class="list-group list-group-horizontal p-0 border-0 bg-dark text-light" style="border-radius: 0px; font-size: 14px;">
+                                <li class="list-group-item p-0 pr-3 border-0 bg-dark text-light" style="border-radius: 0px;">
+                                    <button id="commentLike"><%= helper.timeSince(video.upload_date) %></button>
+                                </li>
+                                <% if(video.author != logUser.username) { %>
+                                <li class="list-group-item p-0 pr-3 border-0 bg-dark text-light" style="border-radius: 0px;">
+                                    <% if(video.likes == logUser.username) { %>
+                                        <form method="POST" action="/videos/unlike/<%- video._id %>">
+                                            <button type="submit" id="commentUnlike"><i class="fa-solid fa-heart mr-1"></i> Liked</button>
+                                        </form>
+                                    <% } else { %>
+                                        <form method="POST" action="/videos/unlike/<%- video._id %>">
+                                            <button type="submit" id="commentLike"><i class="fa-regular fa-heart mr-1"></i> Like</button>
+                                        </form>
+                                    <% } %>
+                                </li>
+                                <% } else { %>
+                                    <li class="list-group-item p-0 pr-3 border-0 bg-dark text-light" style="border-radius: 0px;">
+                                        <form method="POST" action="/videos/delete/<%- video._id %>">
+                                            <button type="submit" id="commentLike"><i class="fa-solid fa-trash mr-1"></i> Delete</button>
+                                        </form>
+                                    </li>
+                                <% } %>
+                            </ul>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="card mt-3 border-0 bg-dark text-light" style="border-radius: 0px;">
+        </div>
+    </div>
+    <div class="row mb-2">
+        <div class="col-12">
+            <div class="card border-0 bg-dark text-light" style="border-radius: 0px;">
                 <div class="card-body">
+                    <form method="POST" action="/videos/comment/<%- video._id %>">
+                        <div class="row mb-4">
+                            <div class="col-10">
+                                <textarea id="commentText" name="commentText" style="resize: none;" class="form-control" placeholder="Write A Reply"></textarea>
+                            </div>
+                            <div class="col-2 pl-0">
+                                <button type="submit" id="sendBtn"><i class="fa-solid fa-paper-plane"></i></button>
+                            </div>
+                        </div>
+                    </form>
                     <div class="row mb-2">
                         <div class="col-12">
+                            <div class="row mb-2 pb-2 border-bottom">
+                                <div class="col-12">
+                                    <h4 class="card-title">Comments</h4>
+                                </div>
+                            </div>
                             <% for(var c = 0; c<comments.length; c++) { %>
                                 <% if(comments[c].post_id == video._id) { %>
-                                    <div class="row mb-3">
-                                        <div class="col-12">
-                                            <form method="POST" action="/videos/comment/<%- video._id %>">
-                                                <div class="row mt-2">
-                                                    <div class="col-11">
-                                                        <textarea id="commentText" name="commentText" style="resize: none;" class="form-control" placeholder="Write A Reply"></textarea>
-                                                    </div>
-                                                    <div class="col-1">
-                                                        <button type="submit" id="sendBtn"><i class="fa-solid fa-paper-plane"></i></button>
-                                                    </div>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-                                    <div class="row mb-3">
-                                        <div class="col-12">
-                                            <h4 class="card-title">Comments</h4>
-                                        </div>
-                                    </div>
-                                    <div class="row text-light">
-                                        <div class="col-1 pl-4">
+                                    <div class="row pt-3 pb-2">
+                                        <div class="col-2 pr-0">
                                             <a href="/users/<%- comments[c].author %>">
                                                 <% if(comments[c].comments.avatar) { %>
                                                     <img src="/uploads/<%- comments[c].author %>/<%- comments[c].comments.avatar %>" width="32" height="32" class="rounded-circle">
@@ -131,42 +146,43 @@
                                                 <% } %>
                                             </a>
                                         </div>
-                                        <div class="col-11">
+                                        <div class="col-7 pl-0">
                                             <div class="commentBox">
-                                                <p class="m-0 p-0" style="font-size: 16px;"><a href="/users/<%- comments[c].author %>" class="text-light"><%- comments[c].comments.firstname %> <%- comments[c].comments.lastname %></a></p>
+                                                <p class="m-0 p-0"><a href="/users/<%- comments[c].author %>" class="text-light"><%- comments[c].comments.firstname %> <%- comments[c].comments.lastname %></a></p>
                                                 <p class="m-0 p-0"><%- comments[c].data %></p> 
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="row mb-2 mt-3 mb-3">
-                                        <div class="col-1"></div>
-                                        <div class="col-11 pl-5">
-                                            <ul class="list-group list-group-horizontal bg-dark p-0 border-0" style="border-radius: 0px;">
-                                                <li class="list-group-item p-0 bg-dark pr-3 border-0" style="border-radius: 0px;">
-                                                    <button id="commentLike" class="text-light"><%= helper.timeSince(comments[c].date_made) %></button>
+                                    <div class="row mb-2">
+                                        <div class="col-2"></div>
+                                        <div class="col-7">
+                                            <ul class="list-group list-group-horizontal p-0 border-0 bg-dark text-light" style="border-radius: 0px;">
+                                                <li class="list-group-item p-0 pr-3 border-0 bg-dark text-light" style="border-radius: 0px;">
+                                                    <button id="commentLike"><%= helper.timeSince(comments[c].date_made) %></button>
                                                 </li>
-                                                <li class="list-group-item p-0 pr-3 bg-dark border-0" style="border-radius: 0px;">
-                                                    <% if(comments[c].likes == logUser.username) { %>
-                                                        <form method="POST" action="/videos/unlikeComment/<%- comments[c]._id %>">
-                                                            <button type="submit" id="commentUnlike"><i class="fa-solid fa-heart mr-1"></i> Liked</button>
-                                                        </form>
-                                                    <% } else { %>
-                                                        <form method="POST" action="/videos/likeComment/<%- comments[c]._id %>">
-                                                            <button type="submit" id="commentLike" class="text-light"><i class="fa-regular fa-heart mr-1"></i> Like</button>
-                                                        </form>
-                                                    <% } %>
-                                                </li>
+                                                <% if(comments[c].author != logUser.username) { %>
+                                                    <li class="list-group-item p-0 pr-3 border-0 bg-dark text-light" style="border-radius: 0px;">
+                                                        <% if(comments[c].likes == logUser.username) { %>
+                                                            <form method="POST" action="/posts/unlikeComment/<%- comments[c]._id %>">
+                                                                <button type="submit" id="commentUnlike"><i class="fa-solid fa-heart mr-1"></i> Liked</button>
+                                                            </form>
+                                                        <% } else { %>
+                                                            <form method="POST" action="/posts/likeComment/<%- comments[c]._id %>">
+                                                                <button type="submit" id="commentLike"><i class="fa-regular fa-heart mr-1"></i> Like</button>
+                                                            </form>
+                                                        <% } %>
+                                                    </li>
+                                                <% } %>
                                                 <% if(comments[c].author == logUser.username) { %>
-                                                    <li class="list-group-item p-0 bg-dark pr-3 border-0" style="border-radius: 0px;">
-                                                        <form method="POST" action="/videos/deleteComment/<%- comments[c]._id %>">
-                                                            <button type="submit" id="commentLike" class="text-light"><i class="fa-solid fa-trash mr-1"></i> Delete</button>
+                                                    <li class="list-group-item p-0 pr-3 border-0 bg-dark text-light" style="border-radius: 0px;">
+                                                        <form method="POST" action="/posts/deleteComment/<%- comments[c]._id %>">
+                                                            <button type="submit" id="commentLike"><i class="fa-solid fa-trash mr-1"></i> Delete</button>
                                                         </form>
                                                     </li>
                                                 <% } %>
                                             </ul>
                                         </div>
                                     </div>
-                                    
                                 <% } %>
                             <% } %>    
                         </div>
@@ -174,7 +190,41 @@
                 </div>
             </div>
         </div>
-       
+    </div>
+    <div class="row mb-2">
+        <div class="col-12">
+            <div class="card mt-2 border-0 bg-dark text-light" style="border-radius: 0px;">
+                <div class="card-body">
+                    <h5 class="card-title">More Videos</h5>
+                    <hr />
+                    <% for(var mv = 0; mv<moreVideos.length; mv++) { %>
+                        <% if(moreVideos[mv].privacy == 0) { %>
+                            <div class="row pb-3 border-bottom">
+                                <div class="col-lg-4">
+                                    <a href="/videos/watch/<%- moreVideos[mv]._id %>">
+                                        <% if(moreVideos[mv].thumbnail) { %>
+                                            <img src="/uploads/<%- moreVideos[mv].author %>/<%- moreVideos[mv].filename %>" width="100%" height="200">
+                                        <% } else { %>
+                                            <img src="/img/no_thumb.png" width="100%" height="200">
+                                        <% } %>
+                                    </a>
+                                </div>
+                                <div class="col-lg-8 pt-2">
+                                    <h5 class="text-light"><%- moreVideos[mv].title %></h5>
+                                    <p class="m-0 p-0">
+                                        <small class="text-muted">
+                                            <a href="/users/<%- moreVideos[mv].author %>" class="text-muted"><%- moreVideos[mv].moreVideos.firstname %> <%- moreVideos[mv].moreVideos.lastname %></a>
+                                            &bull;
+                                            <%- moreVideos[mv].views.length %> views &bull; <%= helper.timeSince(moreVideos[mv].upload_date) %>
+                                        </small>
+                                    </p>
+                                </div>
+                            </div>
+                        <% } %>
+                    <% } %>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>

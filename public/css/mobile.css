@@ -97,3 +97,123 @@ a.nav-link {
 #proUser {
     text-shadow: 2px 2px 2px #000;
 }
+
+/* Video Player */
+#video_player_box {
+    width: 100%;
+    height: 300px;
+    background: #000;
+    margin-top: 25px;
+}
+#video_controls_bar {
+    width: 100%;
+    height: 80px;
+    background: #000;
+    opacity: 0.7;
+    margin-top: -80px;
+}
+#seekslider[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent;
+    cursor: pointer;
+    width: 100%;
+    margin-bottom: 0px;
+}
+#seekslider[type="range"]::-webkit-slider-runnable-track {
+    background: #bb0000;
+    height: 0.5rem;
+}
+#seekslider[type="range"]::-moz-range-track {
+    background: #bb0000;
+    height: 0.5rem;
+}
+#seekslider[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none; /* Override default look */
+    appearance: none;
+    margin-top: -12px; /* Centers thumb on the track */
+    background-color: #bb0000;
+    height: 2rem;
+    width: 1rem;    
+}
+#playPauseBtn {
+    background: none;
+    border: none;
+    outline: none;
+    color: #bb0000;
+    font-size: 20px;
+    margin-left: 25px;
+    float: left;
+}
+#muteBtn {
+    background: none;
+    border: none;
+    outline: none;
+    color: #bb0000;
+    font-size: 20px;
+    margin-left: 25px;
+    float: left;
+}
+#curtimetext {
+    color: #bb0000;
+    font-size: 20px;
+    margin-left: 20px;
+    float: left;
+}
+#volumeslider[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent;
+    cursor: pointer;
+    width: 100px;
+    margin-bottom: 0px;
+    margin-left: 20px;
+    margin-top: 5px;
+    float: left;
+}
+#volumeslider[type="range"]::-webkit-slider-runnable-track {
+    background: #bb0000;
+    height: 0.5rem;
+}
+#volumeslider[type="range"]::-moz-range-track {
+    background: #bb0000;
+    height: 0.5rem;
+}
+#volumeslider[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none; /* Override default look */
+    appearance: none;
+    margin-top: -12px; /* Centers thumb on the track */
+    background-color: #bb0000;
+    height: 2rem;
+    width: 1rem;    
+}
+#fullScreenBtn {
+    background: none;
+    border: none;
+    outline: none;
+    color: #bb0000;
+    font-size: 20px;
+    margin-right: 25px;
+    float: right;
+}
+
+#vidUnlikeBtn {
+    width: 50px;
+    height: 38px;
+    float: right;
+    color: #FFF;
+    border: none;
+    outline: none;
+    box-shadow: none;
+    background: #bb0000;
+}
+#vidlikeBtn {
+    width: 50px;
+    height: 38px;
+    float: right;
+    color: #bb0000;
+    border: 1px #bb0000 solid;
+    outline: none;
+    box-shadow: none;
+    background: #FFF;
+}
