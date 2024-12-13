@@ -161,7 +161,7 @@
                                         </div>
                                         <div class="row mb-4 border-bottom">
                                             <ul class="list-group list-group-horizontal bg-dark border-0 p-0" style="border-radius: 0px;">
-                                                <% if(comments[c].author != logUser.username) { %>
+                                                <% if(posts[p].author != logUser.username) { %>
                                                     <li class="list-group-item border-0 bg-dark" style="border-radius: 0px;">
                                                         <% if(posts[p].likes == logUser.username) { %>
                                                             <form method="POST" action="/posts/unlike/<%- posts[p]._id %>">
